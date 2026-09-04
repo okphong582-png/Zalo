@@ -1,5 +1,5 @@
 /**
- * ZALO MARKETING PRO - CLIENT LOGIC & REALTIME SUITE (VOICE NOTE & ADS ENGINE)
+ * ZALO MARKETING PRO - CLIENT LOGIC & REALTIME SUITE (VOICE NOTE & GITHUB PAGES DYNAMIC BASE)
  */
 
 // Global Application State
@@ -38,10 +38,66 @@ const state = {
 let currentPlayingAudio = null;
 let currentPlayingBtn = null;
 
+// API Base URL (Dành cho GitHub Pages hoặc Multi-domain)
+function getApiBase() {
+    let custom = localStorage.getItem('zalo_server_url');
+    if (custom) {
+        return custom.trim().replace(/\/+$/, '');
+    }
+    return '';
+}
+
+function openServerModal() {
+    const input = document.getElementById('serverBaseUrlInput');
+    if (input) input.value = localStorage.getItem('zalo_server_url') || '';
+    document.getElementById('serverConfigModalOverlay')?.classList.add('active');
+}
+
+function closeServerModal() {
+    document.getElementById('serverConfigModalOverlay')?.classList.remove('active');
+}
+
+function initServerConfigModal() {
+    document.getElementById('btnSaveServerConfig')?.addEventListener('click', () => {
+        const url = (document.getElementById('serverBaseUrlInput')?.value || '').trim();
+        if (url) {
+            localStorage.setItem('zalo_server_url', url);
+            showToast(`Đã lưu Backend Server: ${url}`, 'success');
+        } else {
+            localStorage.removeItem('zalo_server_url');
+            showToast('Đã chuyển về kết nối mặc định.', 'info');
+        }
+        closeServerModal();
+        checkAuthStatus();
+        initEventStream();
+        initChatStream();
+    });
+
+    document.getElementById('btnTestServerPing')?.addEventListener('click', async () => {
+        const url = (document.getElementById('serverBaseUrlInput')?.value || '').trim().replace(/\/+$/, '');
+        const pingText = document.getElementById('serverPingText');
+        pingText.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang kiểm tra...';
+
+        try {
+            const target = (url || getApiBase()) + '/api/auth/status';
+            const res = await fetch(target, { method: 'GET' });
+            if (res.ok) {
+                const data = await res.json();
+                pingText.innerHTML = `<span class="text-green"><i class="fa-solid fa-circle-check"></i> Kết nối thành công! (${data.isLoggedIn ? 'Đã đăng nhập' : 'Chưa đăng nhập'})</span>`;
+            } else {
+                pingText.innerHTML = `<span class="text-red"><i class="fa-solid fa-triangle-exclamation"></i> Server trả về mã lỗi: ${res.status}</span>`;
+            }
+        } catch (e) {
+            pingText.innerHTML = `<span class="text-red"><i class="fa-solid fa-circle-xmark"></i> Không thể kết nối: ${e.message}</span>`;
+        }
+    });
+}
+
 // ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', () => {
     initClock();
     initNavigation();
+    initServerConfigModal();
     initAuthHandlers();
     initGroupHub();
     initCampaignStudio();
@@ -160,7 +216,7 @@ function initEventStream() {
         state.eventSource.close();
     }
 
-    const es = new EventSource('/api/campaign/events');
+    const es = new EventSource(`${getApiBase()}/api/campaign/events`);
     state.eventSource = es;
 
     es.addEventListener('status', (e) => updateCampaignStatusUI(JSON.parse(e.data)));
@@ -188,7 +244,7 @@ function initChatStream() {
         state.chatEventSource.close();
     }
 
-    const es = new EventSource('/api/chat/stream');
+    const es = new EventSource(`${getApiBase()}/api/chat/stream`);
     state.chatEventSource = es;
 
     es.addEventListener('new_message', (e) => {
@@ -236,7 +292,7 @@ function updateChatUnreadBadge() {
 // ==================== AUTH MODULE ====================
 async function checkAuthStatus() {
     try {
-        const res = await fetch('/api/auth/status');
+        const res = await fetch(`${getApiBase()}/api/auth/status`);
         const data = await res.json();
         state.isLoggedIn = data.isLoggedIn;
         state.user = data.user;
@@ -310,7 +366,7 @@ function initAuthHandlers() {
         btnLoginCookie.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xác thực...';
 
         try {
-            const res = await fetch('/api/auth/login-cookie', {
+            const res = await fetch(`${getApiBase()}/api/auth/login-cookie`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ cookie, imei })
@@ -351,7 +407,7 @@ function startQRLogin() {
     btnGen.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo mã QR...';
     qrStatus.innerHTML = '<span class="pulse-dot"></span> Đang kết nối máy chủ Zalo...';
 
-    const qrEventSource = new EventSource('/api/auth/login-qr');
+    const qrEventSource = new EventSource(`${getApiBase()}/api/auth/login-qr`);
     currentQREventSource = qrEventSource;
 
     qrEventSource.addEventListener('qr_code', (e) => {
@@ -434,7 +490,7 @@ function renderSavedAccounts(accounts) {
 async function selectAccount(uid) {
     try {
         showToast('Đang chuyển đổi tài khoản...', 'info');
-        const res = await fetch(`/api/auth/accounts/${uid}/select`, { method: 'POST' });
+        const res = await fetch(`${getApiBase()}/api/auth/accounts/${uid}/select`, { method: 'POST' });
         const data = await res.json();
         if (data.success) {
             showToast(`Đã chuyển sang tài khoản: ${data.user.name}`, 'success');
@@ -450,7 +506,7 @@ async function selectAccount(uid) {
 async function deleteAccount(uid) {
     if (!confirm('Bạn có chắc chắn muốn xóa tài khoản này khỏi danh sách lưu?')) return;
     try {
-        await fetch(`/api/auth/accounts/${uid}`, { method: 'DELETE' });
+        await fetch(`${getApiBase()}/api/auth/accounts/${uid}`, { method: 'DELETE' });
         showToast('Đã xóa tài khoản', 'info');
         checkAuthStatus();
     } catch (e) {}
@@ -504,7 +560,7 @@ function initLiveChat() {
             formData.append('file', file);
             showToast(`Đang upload: ${file.name}...`, 'info');
             try {
-                const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                const res = await fetch(`${getApiBase()}/api/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.success) {
                     state.chatAttachedFile = data.file;
@@ -534,7 +590,7 @@ function initLiveChat() {
             formData.append('file', file);
             showToast(`Đang upload Voice: ${file.name}...`, 'info');
             try {
-                const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                const res = await fetch(`${getApiBase()}/api/upload`, { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.success) {
                     state.chatVoiceFile = data.file;
@@ -680,11 +736,11 @@ async function stopAndSendLiveRecording() {
         showToast('Đang tải và gửi Voice Note...', 'info');
 
         try {
-            const upRes = await fetch('/api/upload', { method: 'POST', body: formData });
+            const upRes = await fetch(`${getApiBase()}/api/upload`, { method: 'POST', body: formData });
             const upData = await upRes.json();
             if (upData.success) {
                 // Gửi Voice
-                const res = await fetch('/api/chat/send-voice', {
+                const res = await fetch(`${getApiBase()}/api/chat/send-voice`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -734,7 +790,7 @@ async function handleVoiceModalUpload(file) {
     showToast(`Đang nạp file voice: ${file.name}...`, 'info');
 
     try {
-        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const res = await fetch(`${getApiBase()}/api/upload`, { method: 'POST', body: formData });
         const data = await res.json();
         if (data.success) {
             state.modalVoiceFile = data.file;
@@ -805,7 +861,7 @@ function stopModalMicRecording() {
         // Tự động upload
         const formData = new FormData();
         formData.append('file', audioFile);
-        const upRes = await fetch('/api/upload', { method: 'POST', body: formData });
+        const upRes = await fetch(`${getApiBase()}/api/upload`, { method: 'POST', body: formData });
         const upData = await upRes.json();
         if (upData.success) {
             state.modalVoiceFile = upData.file;
@@ -827,7 +883,7 @@ async function handleConfirmSendVoiceToGroup() {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi Voice...';
 
     try {
-        const res = await fetch('/api/chat/send-voice', {
+        const res = await fetch(`${getApiBase()}/api/chat/send-voice`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -895,7 +951,7 @@ function toggleVoiceAudio(audioUrl, btnEl) {
 async function loadConversations() {
     const container = document.getElementById('conversationsListContainer');
     try {
-        const res = await fetch('/api/chat/conversations');
+        const res = await fetch(`${getApiBase()}/api/chat/conversations`);
         const data = await res.json();
         if (data.success) {
             state.conversations = data.conversations || [];
@@ -989,7 +1045,7 @@ async function openConversation(threadId, type = 'user', nameEncoded = '', avata
     stream.innerHTML = '<div class="text-center text-muted p-4"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải tin nhắn...</div>';
 
     try {
-        const res = await fetch(`/api/chat/conversations/${threadId}/messages`);
+        const res = await fetch(`${getApiBase()}/api/chat/conversations/${threadId}/messages`);
         const data = await res.json();
         if (data.success) {
             state.activeChatMessages = data.messages || [];
@@ -1115,7 +1171,7 @@ async function sendCurrentChatMessage() {
     renderActiveChatMessages();
 
     try {
-        let endpoint = '/api/chat/send';
+        let endpoint = `${getApiBase()}/api/chat/send`;
         let payload = {
             threadId: state.activeChat.threadId,
             type: state.activeChat.type,
@@ -1124,7 +1180,7 @@ async function sendCurrentChatMessage() {
         };
 
         if (isVoice) {
-            endpoint = '/api/chat/send-voice';
+            endpoint = `${getApiBase()}/api/chat/send-voice`;
             payload = {
                 threadId: state.activeChat.threadId,
                 type: state.activeChat.type,
@@ -1256,7 +1312,7 @@ async function loadGroups() {
     }
 
     try {
-        const res = await fetch('/api/groups');
+        const res = await fetch(`${getApiBase()}/api/groups`);
         const data = await res.json();
         if (data.success) {
             state.groups = data.groups || [];
@@ -1325,7 +1381,7 @@ async function selectGroup(groupId) {
     tbody.innerHTML = '<tr><td colspan="7" class="text-center p-4"><i class="fa-solid fa-spinner fa-spin"></i> Đang quét thành viên nhóm...</td></tr>';
 
     try {
-        const res = await fetch(`/api/groups/${groupId}/members`);
+        const res = await fetch(`${getApiBase()}/api/groups/${groupId}/members`);
         const data = await res.json();
         if (data.success) {
             state.selectedGroupMembers = data.data.members || [];
@@ -1397,7 +1453,7 @@ function updateMemberCheckboxes() {
 
 function exportGroupData(format) {
     if (!state.selectedGroup) return;
-    window.location.href = `/api/groups/${state.selectedGroup.id}/export?format=${format}`;
+    window.location.href = `${getApiBase()}/api/groups/${state.selectedGroup.id}/export?format=${format}`;
     showToast(`Đang tải file danh sách thành viên (${format.toUpperCase()})...`, 'success');
 }
 
@@ -1417,7 +1473,7 @@ function initCampaignStudio() {
         const gId = selectEl.value;
         if (gId) {
             showToast('Đang tải danh sách thành viên của nhóm...', 'info');
-            const res = await fetch(`/api/groups/${gId}/members`);
+            const res = await fetch(`${getApiBase()}/api/groups/${gId}/members`);
             const data = await res.json();
             if (data.success) {
                 state.campaignTargets = data.data.members || [];
@@ -1441,7 +1497,7 @@ function initCampaignStudio() {
 
     document.getElementById('btnLoadSavedTemplate')?.addEventListener('click', async () => {
         try {
-            const res = await fetch('/api/template');
+            const res = await fetch(`${getApiBase()}/api/template`);
             const data = await res.json();
             if (data.success && data.content) {
                 document.getElementById('campaignMessageText').value = data.content;
@@ -1542,7 +1598,7 @@ async function handleFileUpload(file) {
     showToast(`Đang upload: ${file.name}...`, 'info');
 
     try {
-        const res = await fetch('/api/upload', { method: 'POST', body: formData });
+        const res = await fetch(`${getApiBase()}/api/upload`, { method: 'POST', body: formData });
         const data = await res.json();
         if (data.success) {
             state.attachedFile = data.file;
@@ -1666,7 +1722,7 @@ async function launchCampaign() {
     if (!confirm(`🚀 Xác nhận BẮT ĐẦU GỬI THẬT cho ${targets.length} người nhận ${isVoice ? '(Chế độ Voice Note)' : ''}?`)) return;
 
     try {
-        const res = await fetch('/api/campaign/start', {
+        const res = await fetch(`${getApiBase()}/api/campaign/start`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1701,18 +1757,18 @@ function initCampaignMonitor() {
     document.getElementById('btnDownloadLogs')?.addEventListener('click', downloadLogs);
 
     document.getElementById('btnPauseCampaign')?.addEventListener('click', async () => {
-        await fetch('/api/campaign/pause', { method: 'POST' });
+        await fetch(`${getApiBase()}/api/campaign/pause`, { method: 'POST' });
         showToast('Đã tạm dừng chiến dịch', 'warn');
     });
 
     document.getElementById('btnResumeCampaign')?.addEventListener('click', async () => {
-        await fetch('/api/campaign/resume', { method: 'POST' });
+        await fetch(`${getApiBase()}/api/campaign/resume`, { method: 'POST' });
         showToast('Chiến dịch tiếp tục', 'info');
     });
 
     document.getElementById('btnStopCampaign')?.addEventListener('click', async () => {
         if (!confirm('Bạn có chắc chắn muốn DỪNG HẲN chiến dịch này không?')) return;
-        await fetch('/api/campaign/stop', { method: 'POST' });
+        await fetch(`${getApiBase()}/api/campaign/stop`, { method: 'POST' });
         showToast('Đã dừng chiến dịch', 'error');
     });
 }
@@ -1793,7 +1849,7 @@ async function loadHistory() {
     if (!tbody) return;
 
     try {
-        const res = await fetch('/api/campaign/history');
+        const res = await fetch(`${getApiBase()}/api/campaign/history`);
         const data = await res.json();
         if (data.success && data.history && data.history.length > 0) {
             tbody.innerHTML = data.history.map(item => `

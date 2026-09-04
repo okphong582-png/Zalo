@@ -89,6 +89,9 @@
                         <span class="dot"></span>
                         <span id="connectionText">Đang Kết Nối</span>
                     </div>
+                    <button class="btn btn-outline btn-sm" id="btnConfigServer" onclick="openServerModal()" title="Cài Đặt Máy Chủ Kết Nối (Nếu Chạy Trên GitHub Pages)">
+                        <i class="fa-solid fa-server text-cyan"></i> <span class="hide-mobile">Server</span>
+                    </button>
                     <button class="btn btn-outline btn-sm" id="btnRefreshData" title="Tải lại dữ liệu">
                         <i class="fa-solid fa-rotate"></i>
                     </button>
@@ -858,6 +861,33 @@
                 <button class="btn btn-gradient btn-sm" id="btnConfirmSendVoiceToGroup">
                     <i class="fa-solid fa-paper-plane"></i> GỬI VOICE VÀO NHÓM NGAY
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL: CẤU HÌNH SERVER KẾT NỐI (GITHUB PAGES) ================= -->
+    <div class="modal-overlay" id="serverConfigModalOverlay">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-server text-cyan"></i> Cài Đặt Máy Chủ API (Backend Server)</h3>
+                <button class="btn-close-modal" onclick="closeServerModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-3">
+                    Khi bạn mở web từ <strong>GitHub Pages</strong>, trình duyệt cần kết nối với máy chủ Node.js của bạn (Local Tunnel, Ngrok, Render hoặc VPS).
+                </p>
+                <div class="form-group">
+                    <label class="form-label">Địa chỉ Backend Server URL:</label>
+                    <input type="text" id="serverBaseUrlInput" class="form-control" placeholder="Để trống nếu chạy trực tiếp, hoặc nhập https://xxxx.loca.lt">
+                    <span class="file-types-hint">Ví dụ: <code>http://localhost:3000</code> hoặc <code>https://my-tool.loca.lt</code></span>
+                </div>
+                <div class="server-status-box mt-3" id="serverPingStatusBox">
+                    <span id="serverPingText">Chưa kiểm tra</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline btn-sm" id="btnTestServerPing"><i class="fa-solid fa-bolt"></i> Kiểm Tra Kết Nối</button>
+                <button class="btn btn-primary btn-sm" id="btnSaveServerConfig"><i class="fa-solid fa-floppy-disk"></i> Lưu & Áp Dụng</button>
             </div>
         </div>
     </div>
