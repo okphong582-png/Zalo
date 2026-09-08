@@ -3,924 +3,655 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZALO MARKETING PRO - Quản Lý Nhóm & Tin Nhắn Trực Tiếp</title>
+    <title>NEXUS BOT CLOUD | Nền Tảng Chạy Bot Zalo & Telegram Pro 24/7</title>
+    <meta name="description" content="Nền tảng Cloud SaaS chuyên nghiệp vận hành Bot Zalo và Telegram tự động thông minh 24/7. Hỗ trợ gửi Voice Note SoundCloud, duyệt chat an toàn và nạp thẻ tự động.">
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-    <!-- FontAwesome 6 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome 6 Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Main Style CSS -->
+    
+    <!-- Ultra Luxury Dark Theme -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="dark-theme">
-    <div class="app-container">
-        <!-- SIDEBAR NAVIGATION -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="brand-logo">
-                    <div class="logo-icon">
-                        <i class="fa-solid fa-bolt-lightning"></i>
-                    </div>
-                    <div class="logo-text">
-                        <h2>ZALO PRO</h2>
-                        <span class="badge-vip">ENTERPRISE</span>
-                    </div>
+<body class="gatekeeper-locked">
+    <div class="bg-mesh"></div>
+    <div class="bg-grid-overlay"></div>
+
+    <!-- ==================== GATEKEEPER CYBER AUTH MODAL ==================== -->
+    <div class="gatekeeper-overlay active" id="gatekeeperModal">
+        <div class="gatekeeper-box">
+            <div class="gatekeeper-header">
+                <div class="gatekeeper-logo">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; color: #fff; letter-spacing: -0.02em;">NEXUS BOT CLOUD</h2>
+                <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Nền Tảng Vận Hành & Cho Thuê Bot Zalo / Telegram Cao Cấp</p>
+            </div>
+
+            <!-- Segmented Tabs (Hỗ trợ chuyển tab tức thời) -->
+            <div class="gatekeeper-tabs-wrapper">
+                <div class="gatekeeper-segmented-tabs">
+                    <button type="button" class="gatekeeper-tab-btn active" id="tabAuthLogin" onclick="switchAuthTab('login')">
+                        <i class="fa-solid fa-lock"></i> ĐĂNG NHẬP
+                    </button>
+                    <button type="button" class="gatekeeper-tab-btn" id="tabAuthRegister" onclick="switchAuthTab('register')">
+                        <i class="fa-solid fa-user-plus"></i> ĐĂNG KÝ MỚI
+                    </button>
                 </div>
             </div>
 
-            <nav class="sidebar-menu">
-                <div class="menu-label">ĐIỀU KHIỂN CHÍNH</div>
-                <button class="nav-item active" data-tab="dashboard">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>Tổng Quan</span>
-                </button>
-                <button class="nav-item" data-tab="chat">
-                    <i class="fa-solid fa-comments"></i>
-                    <span>Tin Nhắn Trực Tiếp</span>
-                    <span class="nav-badge highlight hidden" id="chatUnreadBadge">0</span>
-                </button>
-                <button class="nav-item" data-tab="groups">
-                    <i class="fa-solid fa-users-rectangle"></i>
-                    <span>Quản Lý Nhóm</span>
-                    <span class="nav-badge" id="groupCountBadge">0</span>
-                </button>
-                <button class="nav-item" data-tab="campaign">
-                    <i class="fa-solid fa-paper-plane"></i>
-                    <span>Studio Gửi Ads</span>
-                </button>
-                <button class="nav-item" data-tab="auth">
-                    <i class="fa-solid fa-key"></i>
-                    <span>Tài Khoản & QR</span>
-                    <span class="nav-badge" id="accountCountBadge">1</span>
-                </button>
-                <button class="nav-item" data-tab="history">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                    <span>Lịch Sử Gửi</span>
-                </button>
-            </nav>
+            <div class="gatekeeper-body">
+                <!-- Form Đăng Nhập -->
+                <form id="formAuthLogin">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-user"></i> Tên Tài Khoản (Username)</label>
+                        <div class="input-icon-wrap">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" class="form-control" id="authLoginUser" placeholder="Nhập username của bạn..." required autocomplete="username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-key"></i> Mật Khẩu</label>
+                        <div class="input-icon-wrap">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="password" class="form-control" id="authLoginPass" placeholder="Nhập mật khẩu..." required autocomplete="current-password">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitLogin" style="width: 100%; margin-top: 10px;">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Đăng Nhập Hệ Thống
+                    </button>
+                </form>
 
-            <!-- SIDEBAR USER FOOTER -->
-            <div class="sidebar-footer">
-                <div class="user-card" id="sidebarUserCard" onclick="switchTab('auth')">
-                    <div class="user-avatar-wrap">
-                        <img src="https://ui-avatars.com/api/?name=Zalo&background=00f0ff&color=000" alt="Avatar" id="sidebarUserAvatar" class="user-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Zalo&background=00f0ff&color=000'">
-                        <span class="status-indicator online"></span>
+                <!-- Form Đăng Ký -->
+                <form id="formAuthRegister" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-user-tag"></i> Chọn Username Mới</label>
+                        <div class="input-icon-wrap">
+                            <i class="fa-solid fa-user-tag"></i>
+                            <input type="text" class="form-control" id="authRegUser" placeholder="VD: vipbot_2026" required autocomplete="username">
+                        </div>
                     </div>
-                    <div class="user-info">
-                        <h4 id="sidebarUserName">Chưa đăng nhập</h4>
-                        <p id="sidebarUserId">ID: ---</p>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-lock"></i> Mật Khẩu (Tối thiểu 6 ký tự)</label>
+                        <div class="input-icon-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" class="form-control" id="authRegPass" placeholder="Tạo mật khẩu an toàn..." required autocomplete="new-password">
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-shield-check"></i> Xác Nhận Mật Khẩu</label>
+                        <div class="input-icon-wrap">
+                            <i class="fa-solid fa-shield-check"></i>
+                            <input type="password" class="form-control" id="authRegPassConfirm" placeholder="Nhập lại mật khẩu..." required autocomplete="new-password">
+                        </div>
+                    </div>
+                    <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 18px; font-size: 0.82rem; color: #34d399;">
+                        <i class="fa-solid fa-gift"></i> <strong>Ưu đãi thành viên:</strong> Tặng ngay <strong>50 phút chạy bot miễn phí</strong> dùng chung cho cả Zalo & Telegram!
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitRegister" style="width: 100%;">
+                        <i class="fa-solid fa-user-plus"></i> Đăng Ký Tài Khoản
+                    </button>
+                </form>
             </div>
-        </aside>
+        </div>
+    </div>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="main-content">
-            <!-- TOP HEADER -->
-            <header class="top-header">
-                <div class="header-left">
-                    <h1 class="page-title" id="pageTitle">Tổng Quan Hệ Thống</h1>
-                    <span class="breadcrumb-sub" id="pageSubtitle">Quản lý và tự động hóa chiến dịch Zalo Marketing</span>
-                </div>
-                <div class="header-right">
-                    <div class="live-clock" id="liveClock">00:00:00</div>
-                    <div class="connection-status connected" id="connectionStatus">
-                        <span class="dot"></span>
-                        <span id="connectionText">Đang Kết Nối</span>
-                    </div>
-                    <button class="btn btn-outline btn-sm" id="btnConfigServer" onclick="openServerModal()" title="Cài Đặt Máy Chủ Kết Nối (Nếu Chạy Trên GitHub Pages)">
-                        <i class="fa-solid fa-server text-cyan"></i> <span class="hide-mobile">Server</span>
-                    </button>
-                    <button class="btn btn-outline btn-sm" id="btnRefreshData" title="Tải lại dữ liệu">
-                        <i class="fa-solid fa-rotate"></i>
-                    </button>
-                    <button class="btn btn-primary btn-sm" id="btnQuickLaunchAds">
-                        <i class="fa-solid fa-paper-plane"></i> Tạo Chiến Dịch
-                    </button>
-                </div>
-            </header>
+    <!-- ==================== TOP NAVIGATION BAR ==================== -->
+    <header class="saas-navbar">
+        <div class="brand-wrap">
+            <div class="brand-emblem">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div>
+                <div class="brand-text">NEXUS <span>PRO</span></div>
+                <div class="brand-tag">BOT CLOUD SAAS</div>
+            </div>
+        </div>
 
-            <!-- TAB CONTENTS -->
-            <div class="content-body">
+        <div class="nav-actions">
+            <!-- Đồng hồ thời gian đếm ngược -->
+            <div class="nav-pill pill-timer" id="navTimeRemaining" title="Thời gian chạy bot dùng chung Zalo & Telegram còn lại">
+                <i class="fa-solid fa-clock"></i> <span class="font-mono">50 phút 00s</span>
+            </div>
+
+            <!-- Số dư ví nạp thẻ -->
+            <div class="nav-pill pill-balance" title="Số dư tài khoản">
+                <i class="fa-solid fa-wallet text-cyan"></i> <span id="navBalance" class="font-mono">0 đ</span>
+            </div>
+
+            <!-- Gói cước -->
+            <div class="pill-plan free" id="navPlanBadge">
+                <i class="fa-solid fa-shield-halved"></i> GÓI FREE
+            </div>
+
+            <!-- User profile & Logout -->
+            <div class="user-badge">
+                <div class="user-avatar"><i class="fa-solid fa-user"></i></div>
+                <span id="navUsername" style="font-weight: 600;">Khách</span>
+                <button class="btn btn-sm btn-secondary" id="btnLogoutSaaS" style="padding: 4px 8px; font-size: 0.72rem; margin-left: 4px;" title="Đăng xuất">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="saas-subnav">
+        <button class="nav-tab-btn active" data-target="sectionBots">
+            <i class="fa-solid fa-robot"></i> Quản Lý Bot Zalo & Telegram
+        </button>
+        <button class="nav-tab-btn" data-target="sectionPayment">
+            <i class="fa-solid fa-credit-card"></i> Nạp Thẻ Cào & Gói Pro 20k
+        </button>
+        <button class="nav-tab-btn" data-target="sectionApproved">
+            <i class="fa-solid fa-shield-check"></i> Nhóm Đã Duyệt (.duyetchat)
+        </button>
+    </nav>
+
+    <!-- ==================== MAIN SAAS CONTENT ==================== -->
+    <main class="saas-main">
+        <!-- ==================== TAB 1: BOTS MANAGEMENT ==================== -->
+        <section class="saas-section active" id="sectionBots">
+            <div class="dashboard-grid">
                 
-                <!-- ================= TAB 1: DASHBOARD ================= -->
-                <section class="tab-pane active" id="tab-dashboard">
-                    <!-- KPI STAT CARDS -->
-                    <div class="stats-grid">
-                        <div class="stat-card glass-card">
-                            <div class="stat-icon icon-blue">
-                                <i class="fa-solid fa-users-line"></i>
+                <!-- RUNTIME BANNER -->
+                <div class="col-12">
+                    <div class="saas-card" style="border-left: 4px solid var(--emerald-500);">
+                        <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                            <div style="display: flex; align-items: center; gap: 16px;">
+                                <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16, 185, 129, 0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--emerald-400); border: 1px solid rgba(16, 185, 129, 0.3);">
+                                    <i class="fa-solid fa-hourglass-half"></i>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.78rem; color: var(--text-dark); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Thời Gian Chạy Bot Còn Lại (Dùng Chung Zalo & Telegram):</div>
+                                    <div style="font-size: 1.5rem; font-weight: 800; color: #fff;" class="font-mono" id="dashTimeRemaining">50 phút 00s</div>
+                                </div>
                             </div>
-                            <div class="stat-details">
-                                <span class="stat-title">Nhóm Đã Tham Gia</span>
-                                <h3 class="stat-value" id="kpiTotalGroups">0</h3>
-                                <span class="stat-sub text-success"><i class="fa-solid fa-circle-check"></i> Đang sẵn sàng</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card glass-card">
-                            <div class="stat-icon icon-purple">
-                                <i class="fa-solid fa-comments"></i>
-                            </div>
-                            <div class="stat-details">
-                                <span class="stat-title">Cuộc Trò Chuyện</span>
-                                <h3 class="stat-value" id="kpiTotalChats">0</h3>
-                                <span class="stat-sub text-info"><i class="fa-solid fa-bolt"></i> Nhắn tin trực tiếp</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card glass-card">
-                            <div class="stat-icon icon-green">
-                                <i class="fa-solid fa-paper-plane"></i>
-                            </div>
-                            <div class="stat-details">
-                                <span class="stat-title">Tin Nhắn Đã Gửi</span>
-                                <h3 class="stat-value" id="kpiTotalSent">0</h3>
-                                <span class="stat-sub text-success"><i class="fa-solid fa-arrow-trend-up"></i> Gửi thật 100%</span>
-                            </div>
-                        </div>
-
-                        <div class="stat-card glass-card">
-                            <div class="stat-icon icon-amber">
-                                <i class="fa-solid fa-shield-halved"></i>
-                            </div>
-                            <div class="stat-details">
-                                <span class="stat-title">Tỷ Lệ Thành Công</span>
-                                <h3 class="stat-value" id="kpiSuccessRate">100%</h3>
-                                <span class="stat-sub text-amber"><i class="fa-solid fa-bolt"></i> Anti-Ban Rate Limiter</span>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <span style="font-size: 0.84rem; color: var(--text-muted);">Khi hết thời gian, cả hai bot sẽ tạm dừng an toàn.</span>
+                                <button class="btn btn-cyan" onclick="document.querySelector('[data-target=\'sectionPayment\']').click()">
+                                    <i class="fa-solid fa-bolt"></i> Nâng Cấp Pro 20k (+100 Tiếng)
+                                </button>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- DASHBOARD MAIN GRID -->
-                    <div class="dashboard-grid">
-                        <!-- Profile Card -->
-                        <div class="glass-card profile-showcase">
-                            <div class="card-header">
-                                <h3><i class="fa-solid fa-id-badge text-cyan"></i> Tài Khoản Zalo Đang Hoạt Động</h3>
-                                <span class="status-badge live" id="dashAccountStatus">ĐÃ KẾT NỐI</span>
+                <!-- CARD 1: ZALO BOT PRO -->
+                <div class="col-6">
+                    <div class="saas-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-comment-dots text-cyan"></i>
+                                <span>Bot Zalo Cloud Automation</span>
                             </div>
-                            <div class="profile-body">
-                                <div class="avatar-large-wrap">
-                                    <img src="https://ui-avatars.com/api/?name=Zalo&background=00f0ff&color=000" alt="Avatar" id="dashUserAvatar" class="avatar-large" onerror="this.src='https://ui-avatars.com/api/?name=Zalo&background=00f0ff&color=000'">
+                            <button class="btn btn-sm btn-secondary" id="btnToggleZaloBot">
+                                <i class="fa-solid fa-play"></i> Bật Bot Zalo
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Trạng thái -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; background: rgba(255, 255, 255, 0.02); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                                <div style="display: flex; align-items: center;">
+                                    <span class="status-indicator status-off" id="zaloBotIndicator"></span>
+                                    <span style="font-size: 0.88rem; font-weight: 500;" id="zaloBotStatusText">Đang tạm dừng</span>
                                 </div>
-                                <div class="profile-meta">
-                                    <h2 id="dashUserName">Đang tải...</h2>
-                                    <div class="meta-tags">
-                                        <span class="tag tag-uid" id="dashUserUid"><i class="fa-solid fa-fingerprint"></i> UID: ---</span>
-                                        <span class="tag tag-phone" id="dashUserPhone"><i class="fa-solid fa-phone"></i> SĐT: ---</span>
-                                    </div>
-                                    <p class="profile-desc">Tài khoản được kết nối an toàn qua cơ chế Zalo Web Session (ZLAPI Engine).</p>
-                                </div>
+                                <span class="badge badge-warning" id="zaloAccountStatusBadge">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> Chưa Đăng Nhập Zalo
+                                </span>
                             </div>
-                            <div class="card-footer">
-                                <button class="btn btn-outline btn-sm" onclick="switchTab('chat')">
-                                    <i class="fa-solid fa-comments"></i> Mở Live Chat
+
+                            <!-- Tabs Đăng Nhập Zalo -->
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                <button type="button" class="btn btn-sm btn-secondary active" id="tabZaloQr" onclick="switchZaloTab('qr')" style="flex: 1;">
+                                    <i class="fa-solid fa-qrcode"></i> Quét Mã QR
                                 </button>
-                                <button class="btn btn-primary btn-sm" onclick="switchTab('groups')">
-                                    <i class="fa-solid fa-list-check"></i> Quản Lý Nhóm
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Quick Action Card -->
-                        <div class="glass-card quick-campaign-box">
-                            <div class="card-header">
-                                <h3><i class="fa-solid fa-wand-magic-sparkles text-purple"></i> Trung Tâm Tự Động Hóa</h3>
-                            </div>
-                            <div class="quick-campaign-body">
-                                <p class="text-muted">Nhắn tin trực tiếp 1-1 với khách hàng, gửi tin nhắn vào nhóm hoặc chạy chiến dịch Ads hàng loạt.</p>
-                                <div class="feature-chips">
-                                    <span class="chip" onclick="switchTab('chat')"><i class="fa-solid fa-comments"></i> Nhắn Tin Trực Tiếp</span>
-                                    <span class="chip" onclick="switchTab('campaign')"><i class="fa-solid fa-shuffle"></i> Gửi Tin Nhắn Ads</span>
-                                    <span class="chip" onclick="switchTab('groups')"><i class="fa-solid fa-file-excel"></i> Xuất Excel Thành Viên</span>
-                                </div>
-                                <div class="quick-action-area">
-                                    <button class="btn btn-gradient btn-lg w-100" onclick="switchTab('chat')">
-                                        <i class="fa-solid fa-comment-dots"></i> Vào Trình Nhắn Tin Web Ngay
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ================= TAB 2: LIVE CHAT & MESSAGE MANAGER ================= -->
-                <section class="tab-pane" id="tab-chat">
-                    <div class="live-chat-container glass-card">
-                        <!-- Left: Conversations List Panel -->
-                        <div class="chat-sidebar-panel">
-                            <div class="chat-sidebar-header">
-                                <div class="chat-header-title">
-                                    <h3><i class="fa-solid fa-comments text-cyan"></i> Hộp Thư Trực Tiếp</h3>
-                                    <button class="btn btn-primary btn-xs" id="btnNewChatPrompt" title="Nhắn tin tới người mới">
-                                        <i class="fa-solid fa-pen-to-square"></i> Nhắn Mới
-                                    </button>
-                                </div>
-                                <div class="search-bar chat-search-bar">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
-                                    <input type="text" id="chatSearchInput" placeholder="Tìm kiếm cuộc trò chuyện...">
-                                </div>
-                                <div class="chat-filter-tabs">
-                                    <button class="chat-filter-btn active" data-filter="all">Tất cả</button>
-                                    <button class="chat-filter-btn" data-filter="user">Cá nhân</button>
-                                    <button class="chat-filter-btn" data-filter="group">Nhóm</button>
-                                </div>
-                            </div>
-
-                            <div class="conversations-list" id="conversationsListContainer">
-                                <div class="loading-state">
-                                    <i class="fa-solid fa-spinner fa-spin"></i> Đang tải hộp thư...
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right: Active Chat Window -->
-                        <div class="chat-main-window" id="chatMainWindow">
-                            <!-- Empty state when no chat selected -->
-                            <div class="empty-chat-state" id="emptyChatState">
-                                <div class="empty-icon-wrap">
-                                    <i class="fa-solid fa-comments text-cyan fa-3x"></i>
-                                </div>
-                                <h3>Chọn một cuộc trò chuyện để bắt đầu nhắn tin</h3>
-                                <p>Gửi và nhận tin nhắn, tài liệu, hình ảnh trực tiếp với thành viên hoặc nhóm Zalo ngay trên trình duyệt.</p>
-                                <button class="btn btn-gradient btn-md" onclick="openNewChatModal()">
-                                    <i class="fa-solid fa-plus"></i> Bắt Đầu Cuộc Trò Chuyện Mới
+                                <button type="button" class="btn btn-sm btn-secondary" id="tabZaloCookie" onclick="switchZaloTab('cookie')" style="flex: 1;">
+                                    <i class="fa-solid fa-cookie"></i> Nhập Cookie & IMEI
                                 </button>
                             </div>
 
-                            <!-- Active Chat Box -->
-                            <div class="active-chat-box hidden" id="activeChatBox">
-                                <!-- Chat Header -->
-                                <div class="chat-room-header">
-                                    <button class="btn-back-convs" id="btnBackToConvsMobile" title="Quay lại danh sách chat">
-                                        <i class="fa-solid fa-arrow-left"></i>
-                                    </button>
-                                    <div class="room-target-avatar-wrap">
-                                        <img src="" alt="Avatar" id="activeChatAvatar" class="room-target-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Chat&background=00f0ff&color=000'">
-                                        <span class="status-indicator online"></span>
-                                    </div>
-                                    <div class="room-target-info">
-                                        <h3 id="activeChatName">Tên Người Nhận</h3>
-                                        <p><span class="badge badge-id" id="activeChatId">ID: ---</span> <span id="activeChatTypeBadge" class="badge badge-count">Cá Nhân</span></p>
-                                    </div>
-                                    <div class="room-header-actions">
-                                        <button class="btn btn-outline btn-xs" id="btnRefreshChatMessages" title="Tải lại tin nhắn"><i class="fa-solid fa-rotate"></i></button>
-                                    </div>
+                            <!-- Phần Quét Mã QR -->
+                            <div id="zaloQrSection" style="text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                                <img id="zaloQrImage" src="" alt="Mã QR Zalo" style="display: none; max-width: 190px; margin: 0 auto 12px; border-radius: 12px; border: 2px solid var(--emerald-500); box-shadow: 0 0 20px var(--emerald-glow);">
+                                <div id="zaloQrStatus" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+                                    Bấm tab Quét Mã QR để hiển thị mã đăng nhập.
                                 </div>
+                                <button class="btn btn-sm btn-secondary" onclick="startZaloQrScan()">
+                                    <i class="fa-solid fa-rotate-right"></i> Làm Mới QR
+                                </button>
+                            </div>
 
-                                <!-- Chat Messages Stream -->
-                                <div class="chat-messages-stream" id="chatMessagesStream">
-                                    <!-- Messages rendered dynamically -->
+                            <!-- Phần Nhập Cookie -->
+                            <div id="zaloCookieSection" style="display: none;">
+                                <div class="form-group">
+                                    <label class="form-label">Zalo Cookies</label>
+                                    <textarea class="form-control font-mono" id="zaloInputCookie" rows="2" placeholder="Dán chuỗi Cookie Zalo..."></textarea>
                                 </div>
-
-                                <!-- Attachment Preview Bar -->
-                                <div class="chat-attachment-bar hidden" id="chatAttachmentBar">
-                                    <div class="attach-preview-item">
-                                        <i class="fa-solid fa-paperclip text-cyan" id="attachPreviewIcon"></i>
-                                        <span id="chatAttachFileName">file.jpg</span>
-                                        <span class="badge badge-count hidden" id="chatVoiceBadge">Voice Note</span>
-                                        <button type="button" class="btn-remove-attach" id="btnCancelChatAttach"><i class="fa-solid fa-xmark"></i></button>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="form-label">IMEI Thiết Bị</label>
+                                    <input type="text" class="form-control font-mono" id="zaloInputImei" placeholder="VD: 5f4e3d2c-1a0b-4c5d...">
                                 </div>
-
-                                <!-- Live Mic Recording Bar -->
-                                <div class="chat-recording-bar hidden" id="chatRecordingBar">
-                                    <div class="rec-indicator-wrap">
-                                        <span class="rec-pulsing-dot"></span>
-                                        <span class="rec-timer" id="chatRecTimer">00:00</span>
-                                        <div class="rec-waveform-anim">
-                                            <span></span><span></span><span></span><span></span><span></span>
-                                        </div>
-                                        <span class="rec-label">Đang thu âm giọng nói...</span>
-                                    </div>
-                                    <div class="rec-actions">
-                                        <button class="btn btn-outline btn-xs" id="btnCancelVoiceRecord"><i class="fa-solid fa-xmark"></i> Hủy</button>
-                                        <button class="btn btn-success btn-xs" id="btnStopAndSendVoice"><i class="fa-solid fa-paper-plane"></i> Gửi Voice Ngay</button>
-                                    </div>
+                                <div class="form-group">
+                                    <label class="form-label">User-Agent (Tùy chọn)</label>
+                                    <input type="text" class="form-control font-mono" id="zaloInputUA" placeholder="Để trống nếu dùng mặc định">
                                 </div>
+                                <button type="button" class="btn btn-primary" id="btnSubmitZaloCookie" style="width: 100%;">
+                                    <i class="fa-solid fa-key"></i> Đăng Nhập Zalo Bằng Cookie
+                                </button>
+                            </div>
 
-                                <!-- Chat Input Bar -->
-                                <div class="chat-composer-bar">
-                                    <input type="file" id="chatFileInput" class="hidden">
-                                    <input type="file" id="chatVoiceFileInput" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,.opus,.webm" class="hidden">
-                                    <button class="btn-tool-icon" id="btnAttachFileChat" title="Đính kèm File hoặc Ảnh"><i class="fa-solid fa-paperclip"></i></button>
-                                    <button class="btn-tool-icon" id="btnAttachVoiceChat" title="🎵 Chọn File Âm Thanh gửi dạng Voice Note (Tin nhắn thoại)"><i class="fa-solid fa-music text-amber"></i></button>
-                                    <button class="btn-tool-icon btn-record-mic" id="btnRecordMicChat" title="🎙️ Bấm để Thu Âm giọng nói trực tiếp"><i class="fa-solid fa-microphone text-green"></i></button>
-                                    <div class="composer-textarea-wrap">
-                                        <textarea id="chatInputText" class="chat-textarea" rows="1" placeholder="Nhập tin nhắn... (Nhấn Enter để gửi, Shift+Enter xuống dòng)"></textarea>
+                            <!-- Danh sách Lệnh Bot Zalo -->
+                            <div style="margin-top: 22px;">
+                                <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-dark); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 8px;">
+                                    Danh Sách Lệnh Zalo Hoạt Động:
+                                </div>
+                                <div class="command-list">
+                                    <div class="command-item">
+                                        <div class="command-tag">.duyetchat</div>
+                                        <div class="command-desc">Phê duyệt nhóm/chat hiện tại để mở khóa quyền bot hoạt động.</div>
                                     </div>
-                                    <button class="btn-send-message" id="btnSendChatMessage" title="Gửi tin nhắn">
-                                        <i class="fa-solid fa-paper-plane"></i>
-                                    </button>
+                                    <div class="command-item">
+                                        <div class="command-tag">.menu</div>
+                                        <div class="command-desc">Hiển thị bảng menu các lệnh (chỉ nhóm đã duyệt mới xem được).</div>
+                                    </div>
+                                    <div class="command-item">
+                                        <div class="command-tag">.soundcloud &lt;bài hát&gt;</div>
+                                        <div class="command-desc">Tìm nhạc và gửi <strong>Tin nhắn thoại (Voice Note sóng âm)</strong> cực nét.</div>
+                                    </div>
+                                    <div class="command-item">
+                                        <div class="command-tag">.info</div>
+                                        <div class="command-desc">Kiểm tra thông tin gói dịch vụ & thời gian chạy bot còn lại.</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- ================= TAB 3: GROUP & MEMBER HUB ================= -->
-                <section class="tab-pane" id="tab-groups">
-                    <div class="groups-hub-container">
-                        <!-- Left: Group List -->
-                        <div class="glass-card groups-sidebar-panel">
-                            <div class="panel-header">
-                                <h3><i class="fa-solid fa-layer-group text-cyan"></i> Danh Sách Nhóm (<span id="groupTotalCount">0</span>)</h3>
-                                <div class="search-bar">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
-                                    <input type="text" id="groupSearchInput" placeholder="Tìm tên nhóm...">
+                <!-- CARD 2: TELEGRAM BOT PRO -->
+                <div class="col-6">
+                    <div class="saas-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-brands fa-telegram text-cyan"></i>
+                                <span>Bot Telegram Cloud 24/7</span>
+                            </div>
+                            <button class="btn btn-sm btn-secondary" id="btnToggleTeleBot">
+                                <i class="fa-solid fa-play"></i> Bật Bot Telegram
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Trạng thái -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; background: rgba(255, 255, 255, 0.02); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                                <div style="display: flex; align-items: center;">
+                                    <span class="status-indicator status-off" id="teleBotIndicator"></span>
+                                    <span style="font-size: 0.88rem; font-weight: 500;" id="teleBotStatusText">Đang dừng</span>
+                                </div>
+                                <span class="badge badge-success">
+                                    <i class="fa-solid fa-server"></i> Cloud Worker Ready
+                                </span>
+                            </div>
+
+                            <!-- Tabs Chế độ chạy -->
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                <button type="button" class="btn btn-sm btn-secondary active" id="tabTeleToken" onclick="switchTeleTab('token')" style="flex: 1;">
+                                    <i class="fa-solid fa-key"></i> Bot Token / Cookies
+                                </button>
+                                <button type="button" class="btn btn-sm btn-secondary" id="tabTeleUpload" onclick="switchTeleTab('upload')" style="flex: 1;">
+                                    <i class="fa-solid fa-file-code"></i> Tải Mã Bot Riêng (.js)
+                                </button>
+                            </div>
+
+                            <!-- Phần Token / Cookies -->
+                            <div id="teleTokenSection">
+                                <div class="form-group">
+                                    <label class="form-label">Telegram Bot Token (Lấy từ @BotFather)</label>
+                                    <input type="text" class="form-control font-mono" id="teleInputToken" placeholder="VD: 7123456789:AAFx...">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Hoặc Cookies Bot / Session Telegram</label>
+                                    <input type="text" class="form-control font-mono" id="teleInputCookies" placeholder="Nhập cookies bot nếu chạy tài khoản...">
                                 </div>
                             </div>
-                            <div class="groups-list" id="groupsListContainer">
-                                <div class="loading-state">
-                                    <i class="fa-solid fa-spinner fa-spin"></i> Đang tải nhóm...
+
+                            <!-- Phần Upload Script Bot Riêng -->
+                            <div id="teleUploadSection" style="display: none; padding: 22px; background: rgba(0, 0, 0, 0.3); border-radius: var(--radius-sm); border: 1px dashed var(--border-highlight); text-align: center;">
+                                <input type="file" id="teleScriptFile" accept=".js" style="display: none;">
+                                <button type="button" class="btn btn-secondary" id="btnUploadTeleScript">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải Lên Script Bot (.js)
+                                </button>
+                                <div id="teleUploadStatus" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 12px;">
+                                    Hỗ trợ tải lên mã nguồn Node.js riêng để hệ thống chạy ngầm độc lập 24/7.
                                 </div>
+                            </div>
+
+                            <!-- Lệnh Telegram -->
+                            <div style="margin-top: 16px;">
+                                <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-dark); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 8px;">
+                                    Lệnh Telegram Tích Hợp Sẵn:
+                                </div>
+                                <div class="command-list" style="margin-bottom: 16px;">
+                                    <div class="command-item">
+                                        <div class="command-tag">/start</div>
+                                        <div class="command-desc">Khởi động bot, hiển thị menu và thời gian sử dụng.</div>
+                                    </div>
+                                    <div class="command-item">
+                                        <div class="command-tag">/music &lt;tên bài&gt;</div>
+                                        <div class="command-desc">Tự động tìm kiếm và gửi file âm thanh chất lượng cao.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terminal Logs -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dark); font-weight: 700;">Terminal Logs Realtime:</span>
+                                <button class="btn btn-sm btn-secondary" id="btnClearTeleLogs" style="padding: 2px 8px; font-size: 0.72rem;">Xóa Logs</button>
+                            </div>
+                            <div class="terminal-box" id="teleTerminalLogs">
+                                <div class="term-line text-muted">// Hệ thống sẵn sàng kết nối Telegram Bot.</div>
                             </div>
                         </div>
+                    </div>
+                </div>
 
-                        <!-- Right: Member Details Panel -->
-                        <div class="glass-card members-detail-panel" id="membersDetailPanel">
-                            <div class="empty-state" id="noGroupSelectedState">
-                                <i class="fa-solid fa-users fa-3x text-muted"></i>
-                                <h3>Chọn một nhóm từ danh sách bên trái</h3>
-                                <p>Xem chi tiết danh sách thành viên (Tên, Zalo Name, UID), xuất file Excel/CSV hoặc tạo chiến dịch gửi tin nhắn.</p>
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: PAYMENT & PRICING ==================== -->
+        <section class="saas-section" id="sectionPayment">
+            <div class="dashboard-grid">
+                
+                <!-- CARD NẠP THẺ CÀO DOITHEVIP -->
+                <div class="col-6">
+                    <div class="saas-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-bolt-lightning text-amber"></i>
+                                <span>Nạp Thẻ Cào Tự Động (Doithevip API)</span>
                             </div>
-
-                            <div class="members-content hidden" id="groupMembersContent">
-                                <div class="group-hero-header">
-                                    <div class="group-hero-avatar-wrap">
-                                        <img src="" alt="Avatar" id="selectedGroupAvatar" class="group-hero-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Group&background=00f0ff&color=000'">
-                                    </div>
-                                    <div class="group-hero-info">
-                                        <h2 id="selectedGroupName">Tên Nhóm</h2>
-                                        <div class="hero-badges">
-                                            <span class="badge badge-id" id="selectedGroupId">ID: ---</span>
-                                            <span class="badge badge-count" id="selectedGroupCount"><i class="fa-solid fa-users"></i> 0 Thành Viên</span>
-                                            <span class="badge badge-lock" id="selectedGroupLockBadge"><i class="fa-solid fa-lock"></i> Chặn xem</span>
-                                        </div>
-                                    </div>
-                                    <div class="group-hero-actions">
-                                        <button class="btn btn-outline btn-sm" id="btnSendVoiceToGroup" title="Gửi Voice Thoại Vào Nhóm">
-                                            <i class="fa-solid fa-microphone text-green"></i> Gửi Voice
-                                        </button>
-                                        <button class="btn btn-outline btn-sm" id="btnChatWithThisGroup" title="Nhắn tin vào nhóm này">
-                                            <i class="fa-solid fa-comments"></i> Nhắn Tin Vào Nhóm
-                                        </button>
-                                        <div class="dropdown">
-                                            <button class="btn btn-outline btn-sm dropdown-toggle" id="btnExportGroup">
-                                                <i class="fa-solid fa-file-export"></i> Xuất File <i class="fa-solid fa-chevron-down"></i>
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a href="#" class="dropdown-item" onclick="exportGroupData('csv')"><i class="fa-solid fa-file-excel text-green"></i> Xuất Excel (CSV)</a>
-                                                <a href="#" class="dropdown-item" onclick="exportGroupData('txt')"><i class="fa-solid fa-file-lines text-cyan"></i> Xuất File TXT</a>
-                                                <a href="#" class="dropdown-item" onclick="exportGroupData('json')"><i class="fa-solid fa-code text-amber"></i> Xuất File JSON</a>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-gradient btn-sm" id="btnLaunchForGroup">
-                                            <i class="fa-solid fa-paper-plane"></i> Gửi Ads Cho Nhóm Này
-                                        </button>
-                                    </div>
+                            <span class="badge badge-success">
+                                <i class="fa-solid fa-lock"></i> Auto Duyệt Tức Thì
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <form id="formChargingCard">
+                                <div class="form-group">
+                                    <label class="form-label">Chọn Nhà Mạng</label>
+                                    <select class="form-control" id="chargingTelco" required>
+                                        <option value="VIETTEL">Viettel</option>
+                                        <option value="VINAPHONE">Vinaphone</option>
+                                        <option value="MOBIFONE">Mobifone</option>
+                                        <option value="VIETNAMOBILE">Vietnamobile</option>
+                                        <option value="ZING">Zing Card</option>
+                                        <option value="GATE">Gate</option>
+                                    </select>
                                 </div>
 
-                                <div class="members-toolbar">
-                                    <div class="search-bar member-search">
-                                        <i class="fa-solid fa-magnifying-glass"></i>
-                                        <input type="text" id="memberSearchInput" placeholder="Tìm thành viên theo tên hoặc UID...">
+                                <div class="form-group">
+                                    <label class="form-label">Chọn Mệnh Giá Thẻ Cào</label>
+                                    <!-- Chips chọn nhanh mệnh giá -->
+                                    <div class="chips-grid">
+                                        <div class="chip-btn" onclick="selectAmountChip(10000)">10.000 đ</div>
+                                        <div class="chip-btn active" onclick="selectAmountChip(20000)">20.000 đ (Gói Pro)</div>
+                                        <div class="chip-btn" onclick="selectAmountChip(50000)">50.000 đ</div>
+                                        <div class="chip-btn" onclick="selectAmountChip(100000)">100.000 đ</div>
+                                        <div class="chip-btn" onclick="selectAmountChip(200000)">200.000 đ</div>
+                                        <div class="chip-btn" onclick="selectAmountChip(500000)">500.000 đ</div>
                                     </div>
-                                    <div class="selection-controls">
-                                        <button class="btn btn-sm btn-outline" id="btnSelectAllMembers"><i class="fa-solid fa-check-double"></i> Chọn tất cả</button>
-                                        <button class="btn btn-sm btn-outline" id="btnDeselectAllMembers"><i class="fa-solid fa-xmark"></i> Bỏ chọn</button>
-                                        <span class="selected-count-badge" id="selectedMembersCountBadge">Đã chọn: 0</span>
-                                    </div>
+                                    <input type="hidden" id="chargingAmount" value="20000">
                                 </div>
 
-                                <div class="members-table-wrap">
-                                    <table class="data-table">
+                                <div class="form-group">
+                                    <label class="form-label">Số Seri Thẻ</label>
+                                    <input type="text" class="form-control font-mono" id="chargingSerial" placeholder="Nhập số seri trên thẻ..." required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Mã Thẻ (Mã cào)</label>
+                                    <input type="text" class="form-control font-mono" id="chargingCode" placeholder="Nhập mã thẻ sau lớp cào..." required>
+                                </div>
+
+                                <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 18px; font-size: 0.82rem; color: #fbbf24;">
+                                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Lưu ý quan trọng:</strong> Vui lòng chọn đúng mệnh giá thẻ. Khi thẻ được duyệt thành công, tiền sẽ tự động cộng ngay vào tài khoản của bạn.
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" id="btnSubmitCharging" style="width: 100%;">
+                                    <i class="fa-solid fa-credit-card"></i> Nạp Thẻ Cào Ngay
+                                </button>
+                            </form>
+
+                            <!-- Lịch sử nạp thẻ -->
+                            <div style="margin-top: 26px;">
+                                <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-dark); margin-bottom: 12px; letter-spacing: 0.04em;">
+                                    Lịch Sử Nạp Thẻ Gần Đây:
+                                </div>
+                                <div style="overflow-x: auto;">
+                                    <table class="saas-table">
                                         <thead>
                                             <tr>
-                                                <th width="40"><input type="checkbox" id="masterMemberCheckbox"></th>
-                                                <th width="50">STT</th>
-                                                <th width="60">Avatar</th>
-                                                <th>Tên Hiển Thị</th>
-                                                <th>Tên Zalo</th>
-                                                <th>User ID (Zalo ID)</th>
-                                                <th width="90">Nhắn Tin</th>
+                                                <th>Thời Gian</th>
+                                                <th>Nhà Mạng</th>
+                                                <th>Mệnh Giá</th>
+                                                <th>Seri</th>
+                                                <th>Trạng Thái</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="membersTableBody">
-                                            <!-- Injected dynamically -->
+                                        <tbody id="cardHistoryTableBody">
+                                            <tr><td colspan="5" class="text-muted text-center py-3">Chưa có giao dịch nạp thẻ nào.</td></tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- ================= TAB 4: CAMPAIGN STUDIO ================= -->
-                <section class="tab-pane" id="tab-campaign">
-                    <div class="campaign-studio-grid">
-                        <!-- Left: Campaign Settings & Composer -->
-                        <div class="glass-card campaign-form-panel">
-                            <div class="panel-header">
-                                <h3><i class="fa-solid fa-sliders text-cyan"></i> Cấu Hình Chiến Dịch Ads</h3>
-                                <button class="btn btn-outline btn-xs" id="btnLoadSavedTemplate">
-                                    <i class="fa-solid fa-file-lines"></i> Nạp message.txt
+                <!-- CARD BẢNG GIÁ DỊCH VỤ & GÓI PRO -->
+                <div class="col-6">
+                    <div class="saas-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-gem text-amber"></i>
+                                <span>Bảng Giá Gói Dịch Vụ Bot Cloud</span>
+                            </div>
+                            <span class="badge badge-warning">
+                                <i class="fa-solid fa-crown"></i> Ưu Đãi VIP
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <div class="pricing-grid">
+                                <!-- GÓI FREE -->
+                                <div class="pricing-card">
+                                    <div class="plan-name">Gói Dùng Thử Free</div>
+                                    <div class="plan-price">0 đ <span>/ Mặc định</span></div>
+                                    <p style="font-size: 0.82rem; color: var(--text-muted);">Trải nghiệm sức mạnh và tốc độ của hệ thống Bot Cloud.</p>
+                                    <ul class="plan-features">
+                                        <li><i class="fa-solid fa-check"></i> 50 phút sử dụng bot miễn phí</li>
+                                        <li><i class="fa-solid fa-check"></i> Dùng chung cho cả Zalo & Telegram</li>
+                                        <li><i class="fa-solid fa-check"></i> Lệnh .menu & .duyetchat</li>
+                                        <li><i class="fa-solid fa-check"></i> Tìm nhạc Voice .soundcloud</li>
+                                    </ul>
+                                    <button class="btn btn-secondary disabled" style="width: 100%;">
+                                        <i class="fa-solid fa-check"></i> Đang Dùng Mặc Định
+                                    </button>
+                                </div>
+
+                                <!-- GÓI PRO -->
+                                <div class="pricing-card popular">
+                                    <div class="card-popular-pill">KHUYÊN DÙNG NHIỀU NHẤT</div>
+                                    <div class="plan-name" style="color: #fbbf24;"><i class="fa-solid fa-crown"></i> Gói Pro 100 Giờ</div>
+                                    <div class="plan-price" style="color: #fbbf24;">20.000 đ <span>/ 100 Tiếng</span></div>
+                                    <p style="font-size: 0.82rem; color: var(--text-muted);">Vận hành bot nhóm chuyên nghiệp, ổn định 24/7 không gián đoạn.</p>
+                                    <ul class="plan-features">
+                                        <li><i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> <strong>100 tiếng (360.000s)</strong> chạy bot 24/7</li>
+                                        <li><i class="fa-solid fa-check"></i> Chạy song song Zalo & Telegram</li>
+                                        <li><i class="fa-solid fa-check"></i> Tải lên mã nguồn bot Node.js riêng</li>
+                                        <li><i class="fa-solid fa-check"></i> Gửi Voice Note SoundCloud không giới hạn</li>
+                                        <li><i class="fa-solid fa-check"></i> Băng thông Server Cloud VIP ưu tiên</li>
+                                    </ul>
+                                    <button class="btn btn-primary" id="btnUpgradeProCard" style="width: 100%;">
+                                        <i class="fa-solid fa-bolt"></i> Nâng Cấp Ngay (20.000đ)
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== TAB 3: APPROVED CHATS ==================== -->
+        <section class="saas-section" id="sectionApproved">
+            <div class="dashboard-grid">
+                <div class="col-12">
+                    <div class="saas-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-shield-halved text-cyan"></i>
+                                <span>Quản Lý Nhóm Zalo Đã Duyệt (.duyetchat)</span>
+                            </div>
+                            <span class="badge badge-success">
+                                <i class="fa-solid fa-shield-check"></i> Bảo Mật Hoạt Động
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px;">
+                                <strong>Chỉ những nhóm/cuộc trò chuyện đã được duyệt</strong> mới có thể gõ <code>.menu</code> và sử dụng các tính năng bot (như tìm nhạc <code>.soundcloud</code>). Bạn có thể gõ trực tiếp <code>.duyetchat</code> trong nhóm Zalo hoặc thêm thủ công ID nhóm bên dưới:
+                            </p>
+
+                            <!-- Form thêm nhóm duyệt -->
+                            <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+                                <div style="flex: 1; min-width: 220px;">
+                                    <input type="text" class="form-control font-mono" id="inputApproveThreadId" placeholder="Nhập Thread ID / ID nhóm Zalo...">
+                                </div>
+                                <div style="flex: 1; min-width: 220px;">
+                                    <input type="text" class="form-control" id="inputApproveThreadName" placeholder="Tên gợi nhớ (VD: Nhóm Học Tập, Nhóm Bạn Bè...)">
+                                </div>
+                                <button class="btn btn-primary" id="btnAddApprovedChat">
+                                    <i class="fa-solid fa-plus"></i> Duyệt Nhóm Này
                                 </button>
                             </div>
 
-                            <div class="studio-form-body">
-                                <!-- Target Source -->
-                                <div class="form-group">
-                                    <label class="form-label"><i class="fa-solid fa-bullseye"></i> Nguồn Danh Sách Người Nhận:</label>
-                                    <div class="source-selector">
-                                        <label class="radio-label">
-                                            <input type="radio" name="targetSourceRadio" value="group" checked>
-                                            <span>Chọn từ Nhóm Zalo</span>
-                                        </label>
-                                        <label class="radio-label">
-                                            <input type="radio" name="targetSourceRadio" value="manual">
-                                            <span>Dán Danh Sách User ID</span>
-                                        </label>
-                                    </div>
-
-                                    <div id="targetGroupSelectWrap" class="mt-2">
-                                        <select id="campaignGroupSelect" class="form-control">
-                                            <option value="">-- Chọn một nhóm để gửi --</option>
-                                        </select>
-                                    </div>
-
-                                    <div id="targetManualInputWrap" class="mt-2 hidden">
-                                        <textarea id="campaignManualIds" class="form-control" rows="3" placeholder="Dán danh sách User ID (cách nhau bởi dấu phẩy, khoảng trắng hoặc xuống dòng)..."></textarea>
-                                    </div>
-                                    <div class="target-summary-chip mt-2" id="targetSummaryChip">
-                                        <i class="fa-solid fa-users"></i> Mục tiêu: <strong id="campaignTargetCount">0</strong> người nhận
-                                    </div>
-                                </div>
-
-                                <!-- Text Composer -->
-                                <div class="form-group">
-                                    <div class="label-with-tools">
-                                        <label class="form-label"><i class="fa-solid fa-font"></i> Nội Dung Tin Nhắn:</label>
-                                        <div class="composer-tools">
-                                            <button type="button" class="tool-btn" onclick="insertTag('{name}')" title="Chèn tên">+ {name}</button>
-                                            <button type="button" class="tool-btn" onclick="insertTag('{id}')" title="Chèn ID">+ {id}</button>
-                                            <button type="button" class="tool-btn" onclick="insertTag('{Chào|Hi|Hello}')" title="Chèn Spin Text">+ Spin</button>
-                                            <button type="button" class="tool-btn btn-spin-test" id="btnTestSpin" title="Thử nghiệm ngẫu nhiên Spin"><i class="fa-solid fa-dice"></i> Thử Spin</button>
-                                        </div>
-                                    </div>
-                                    <textarea id="campaignMessageText" class="form-control" rows="6" placeholder="Nhập nội dung tin nhắn quảng cáo... Hỗ trợ nhiều dòng, icon emoji, link và spin text {A|B|C}..."></textarea>
-                                </div>
-
-                                <!-- Attachment Uploader -->
-                                <div class="form-group">
-                                    <label class="form-label"><i class="fa-solid fa-paperclip"></i> Đính Kèm File / Ảnh / Video / Voice:</label>
-                                    <div class="file-drop-zone" id="fileDropZone">
-                                        <input type="file" id="fileInputHidden" class="hidden">
-                                        <div class="drop-content" id="dropZoneContent">
-                                            <i class="fa-solid fa-cloud-arrow-up fa-2x text-cyan"></i>
-                                            <p>Kéo & Thả file hoặc click để chọn file</p>
-                                            <span class="file-types-hint">Hỗ trợ: Âm thanh (.MP3, .M4A, .WAV), Ảnh (JPG, PNG), Video (MP4), File (PDF, DOCX, ZIP)...</span>
-                                        </div>
-                                        <div class="file-attached-info hidden" id="fileAttachedInfo">
-                                            <div class="attached-thumb" id="attachedThumb">
-                                                <i class="fa-solid fa-file"></i>
-                                            </div>
-                                            <div class="attached-meta">
-                                                <h5 id="attachedFileName">tenfile.jpg</h5>
-                                                <span id="attachedFileSize">0 KB</span>
-                                            </div>
-                                            <button type="button" class="btn-remove-file" id="btnRemoveFile" title="Xóa file">
-                                                <i class="fa-solid fa-xmark"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="voice-option-toggle mt-2 hidden" id="voiceOptionToggleWrap">
-                                        <label class="checkbox-label text-green font-bold">
-                                            <input type="checkbox" id="chkSendAsVoice" checked>
-                                            <span><i class="fa-solid fa-microphone-lines"></i> Gửi dưới dạng Tin Nhắn Thoại (Voice Note / Sóng âm Zalo)</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <!-- Anti-Ban Settings -->
-                                <div class="form-group anti-ban-card">
-                                    <label class="form-label"><i class="fa-solid fa-shield-cat text-green"></i> Thiết Lập An Toàn (Anti-Ban Rate Limiter):</label>
-                                    <div class="delay-slider-wrap">
-                                        <div class="slider-labels">
-                                            <span>Độ trễ ngẫu nhiên (Delay):</span>
-                                            <span class="delay-val-text"><strong id="delayMinVal">5</strong>s - <strong id="delayMaxVal">8</strong>s / tin</span>
-                                        </div>
-                                        <div class="range-dual">
-                                            <input type="range" id="delayMinRange" min="2" max="20" value="5">
-                                            <input type="range" id="delayMaxRange" min="2" max="30" value="8">
-                                        </div>
-                                    </div>
-                                    <div class="anti-ban-options mt-2">
-                                        <label class="checkbox-label">
-                                            <input type="checkbox" id="chkExcludeSelf" checked>
-                                            <span>Tự động bỏ qua tài khoản của chính mình</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <!-- Launch Button -->
-                                <div class="form-actions mt-3">
-                                    <button class="btn btn-gradient btn-xl w-100" id="btnStartCampaign">
-                                        <i class="fa-solid fa-rocket"></i> BẮT ĐẦU GỬI CHIẾN DỊCH (GỬI THẬT)
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right: Live Smartphone Simulator -->
-                        <div class="glass-card phone-preview-panel">
-                            <div class="panel-header">
-                                <h3><i class="fa-solid fa-mobile-screen text-purple"></i> Mô Phỏng Tin Nhắn Trên Zalo</h3>
-                            </div>
-                            <div class="phone-simulator-wrap">
-                                <div class="smartphone-frame">
-                                    <div class="phone-notch"></div>
-                                    <div class="phone-status-bar">
-                                        <span>09:41</span>
-                                        <div class="phone-icons">
-                                            <i class="fa-solid fa-signal"></i>
-                                            <i class="fa-solid fa-wifi"></i>
-                                            <i class="fa-solid fa-battery-full"></i>
-                                        </div>
-                                    </div>
-                                    <div class="zalo-chat-header">
-                                        <i class="fa-solid fa-chevron-left"></i>
-                                        <div class="chat-target-info">
-                                            <img src="https://ui-avatars.com/api/?name=Nguyen+Van+A&background=00f0ff&color=000" alt="Avatar" class="chat-avatar">
-                                            <div class="chat-names">
-                                                <h4>Nguyễn Văn A</h4>
-                                                <span>Vừa truy cập</span>
-                                            </div>
-                                        </div>
-                                        <div class="chat-header-actions">
-                                            <i class="fa-solid fa-phone"></i>
-                                            <i class="fa-solid fa-video"></i>
-                                        </div>
-                                    </div>
-                                    <div class="zalo-chat-body">
-                                        <div class="chat-date-bubble">Hôm nay</div>
-                                        <div class="chat-message-bubble outgoing">
-                                            <div class="bubble-attachment hidden" id="previewBubbleAttachment">
-                                                <img src="" alt="Attachment" id="previewAttachmentImg" class="bubble-img">
-                                                <div class="bubble-doc-file hidden" id="previewDocFile">
-                                                    <i class="fa-solid fa-file-lines fa-2x"></i>
-                                                    <span id="previewDocName">document.pdf</span>
-                                                </div>
-                                            </div>
-                                            <div class="bubble-text" id="previewBubbleText">
-                                                🔥 THAM GIA NHÓM ZALO 🔥<br>
-                                                🎮 Cập nhật tool & thủ thuật Free Fire mỗi ngày<br>
-                                                ⚡ Chia sẻ miễn phí • Nội dung mới liên tục<br>
-                                                👉 Tham gia ngay: https://zalo.me/g/hopzdsicjgkaf2mcquho
-                                            </div>
-                                            <div class="bubble-time">
-                                                <span id="previewBubbleTime">09:42</span>
-                                                <i class="fa-solid fa-check-double text-cyan"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <!-- Bảng nhóm đã duyệt -->
+                            <div style="overflow-x: auto;">
+                                <table class="saas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Thread ID</th>
+                                            <th>Tên Nhóm / Cuộc Trò Chuyện</th>
+                                            <th>Trạng Thái</th>
+                                            <th>Thao Tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="approvedChatsTableBody">
+                                        <tr><td colspan="4" class="text-muted text-center py-3">Đang tải danh sách nhóm đã duyệt...</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                </section>
-
-                <!-- ================= TAB 5: AUTH & MULTI-ACCOUNT ================= -->
-                <section class="tab-pane" id="tab-auth">
-                    <div class="auth-container glass-card">
-                        <div class="tab-nav-inner">
-                            <button class="inner-tab-btn active" data-target="auth-qr">
-                                <i class="fa-solid fa-qrcode"></i> Đăng Nhập Mã QR
-                            </button>
-                            <button class="inner-tab-btn" data-target="auth-cookie">
-                                <i class="fa-solid fa-cookie-bite"></i> Đăng Nhập Cookie & IMEI
-                            </button>
-                            <button class="inner-tab-btn" data-target="auth-accounts">
-                                <i class="fa-solid fa-users-gear"></i> Danh Sách Đa Tài Khoản (<span id="savedAccountsCount">0</span>)
-                            </button>
-                        </div>
-
-                        <!-- SUB-TAB 1: QR LOGIN -->
-                        <div class="inner-tab-pane active" id="auth-qr">
-                            <div class="qr-login-box">
-                                <div class="qr-visual-area">
-                                    <div class="qr-frame" id="qrFrame">
-                                        <div class="qr-scanner-laser"></div>
-                                        <img src="" alt="Mã QR Zalo" id="qrCodeImage" class="qr-img hidden">
-                                        <div class="qr-placeholder" id="qrPlaceholder">
-                                            <i class="fa-solid fa-qrcode fa-3x"></i>
-                                            <p>Bấm nút bên dưới để tạo mã QR đăng nhập</p>
-                                        </div>
-                                    </div>
-                                    <div class="qr-status-msg" id="qrStatusMsg">
-                                        <span class="pulse-dot"></span> Sẵn sàng tạo mã QR
-                                    </div>
-                                </div>
-                                <div class="qr-guide-area">
-                                    <h3><i class="fa-solid fa-mobile-screen-button text-cyan"></i> Hướng Dẫn Quét Mã:</h3>
-                                    <ol class="guide-steps">
-                                        <li>Mở ứng dụng <strong>Zalo</strong> trên điện thoại.</li>
-                                        <li>Chọn biểu tượng <strong>Quét mã QR</strong> ở góc trên bên phải.</li>
-                                        <li>Hướng camera quét mã trên màn hình và bấm <strong>Đăng nhập</strong> trên điện thoại.</li>
-                                    </ol>
-                                    <div class="qr-actions">
-                                        <button class="btn btn-gradient btn-lg" id="btnGenerateQR">
-                                            <i class="fa-solid fa-arrows-rotate"></i> Tạo Mã QR Mới
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SUB-TAB 2: COOKIE & IMEI -->
-                        <div class="inner-tab-pane" id="auth-cookie">
-                            <div class="cookie-form-box">
-                                <div class="form-group">
-                                    <label for="cookieInput"><i class="fa-solid fa-cookie"></i> Chuỗi Cookie Zalo Web:</label>
-                                    <textarea id="cookieInput" class="form-control" rows="4" placeholder="Dán cookie chuỗi (zpw_sek=...;) hoặc định dạng JSON từ extension Cookie-Editor..."></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="imeiInput"><i class="fa-solid fa-barcode"></i> IMEI Thiết Bị Zalo Web:</label>
-                                    <input type="text" id="imeiInput" class="form-control" placeholder="Dán IMEI (ví dụ: a1b2c3d4-e5f6-...)">
-                                </div>
-                                <div class="form-actions">
-                                    <button class="btn btn-primary btn-lg" id="btnLoginCookie">
-                                        <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập Ngay
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- SUB-TAB 3: MULTI-ACCOUNT LIST -->
-                        <div class="inner-tab-pane" id="auth-accounts">
-                            <div class="accounts-list-wrap">
-                                <div class="accounts-header">
-                                    <h4>Tài Khoản Đã Lưu Trên Máy</h4>
-                                    <p class="text-muted">Chuyển đổi qua lại giữa các tài khoản Zalo chỉ với 1 cú click.</p>
-                                </div>
-                                <div class="accounts-grid" id="accountsGrid"></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ================= TAB 6: CAMPAIGN HISTORY ================= -->
-                <section class="tab-pane" id="tab-history">
-                    <div class="glass-card history-panel">
-                        <div class="panel-header">
-                            <h3><i class="fa-solid fa-clock-rotate-left text-cyan"></i> Lịch Sử Các Chiến Dịch Đã Chạy</h3>
-                            <button class="btn btn-outline btn-sm" id="btnRefreshHistory">
-                                <i class="fa-solid fa-rotate"></i> Làm Mới
-                            </button>
-                        </div>
-                        <div class="history-table-wrap">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Thời Gian</th>
-                                        <th>Tên Chiến Dịch</th>
-                                        <th>Tổng Số</th>
-                                        <th>Thành Công</th>
-                                        <th>Thất Bại</th>
-                                        <th>Trạng Thái</th>
-                                        <th>Thao Tác</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="historyTableBody">
-                                    <tr>
-                                        <td colspan="7" class="text-center text-muted">Chưa có chiến dịch nào được thực hiện</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- ================= MODAL: TẠO CUỘC TRÒ CHUYỆN MỚI ================= -->
-    <div class="modal-overlay" id="newChatModalOverlay">
-        <div class="modal-card glass-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-comment-medical text-cyan"></i> Bắt Đầu Cuộc Trò Chuyện Mới</h3>
-                <button class="btn-close-modal" onclick="closeNewChatModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Loại tin nhắn:</label>
-                    <div class="source-selector">
-                        <label class="radio-label">
-                            <input type="radio" name="newChatTypeRadio" value="user" checked>
-                            <span>Gửi tới Người Dùng (Cá Nhân)</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="newChatTypeRadio" value="group">
-                            <span>Gửi vào Nhóm Chat</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label" id="lblNewChatTargetId">User ID Người Nhận (Zalo ID):</label>
-                    <input type="text" id="newChatTargetIdInput" class="form-control" placeholder="Nhập Zalo User ID hoặc Group ID...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Tên hiển thị (Tùy chọn):</label>
-                    <input type="text" id="newChatTargetNameInput" class="form-control" placeholder="Đặt tên gợi nhớ cho người này...">
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline btn-sm" onclick="closeNewChatModal()">Hủy</button>
-                <button class="btn btn-primary btn-sm" id="btnConfirmStartNewChat">
-                    <i class="fa-solid fa-comments"></i> Mở Đoạn Chat
-                </button>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- ================= FLOATING LIVE CAMPAIGN CONTROLLER MODAL ================= -->
-    <div class="campaign-monitor-overlay" id="campaignMonitorOverlay">
-        <div class="campaign-monitor-modal glass-card">
-            <div class="modal-header">
-                <div class="header-status-indicator">
-                    <span class="pulsing-circle active" id="monitorStatusDot"></span>
-                    <h3 id="monitorCampaignName">Chiến Dịch Đang Chạy...</h3>
-                </div>
-                <button class="btn-close-modal" id="btnCloseMonitor"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div class="modal-body">
-                <div class="progress-section">
-                    <div class="progress-bar-wrap">
-                        <div class="progress-bar-fill" id="monitorProgressBar" style="width: 0%"></div>
-                    </div>
-                    <div class="progress-stats-row">
-                        <span>Tiến độ: <strong id="monitorPercentage">0%</strong> (<span id="monitorSentCount">0</span>/<span id="monitorTotalCount">0</span>)</span>
-                        <span>Đã gửi: <strong class="text-green" id="monitorSuccessCount">0 Thành công</strong> | <strong class="text-red" id="monitorFailCount">0 Thất bại</strong></span>
-                    </div>
-                </div>
-
-                <div class="terminal-logs-wrap">
-                    <div class="terminal-header">
-                        <span><i class="fa-solid fa-terminal"></i> LIVE STREAM LOGS</span>
-                        <div class="terminal-actions">
-                            <button class="btn-xs btn-outline" id="btnClearLogs"><i class="fa-solid fa-trash"></i> Xóa</button>
-                            <button class="btn-xs btn-outline" id="btnDownloadLogs"><i class="fa-solid fa-download"></i> Tải Log</button>
-                        </div>
-                    </div>
-                    <div class="terminal-body" id="monitorTerminalBody">
-                        <div class="log-line log-info">[00:00:00] Sẵn sàng nhận logs từ hệ thống...</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button class="btn btn-warning btn-md" id="btnPauseCampaign">
-                    <i class="fa-solid fa-pause"></i> Tạm Dừng
-                </button>
-                <button class="btn btn-success btn-md hidden" id="btnResumeCampaign">
-                    <i class="fa-solid fa-play"></i> Tiếp Tục
-                </button>
-                <button class="btn btn-danger btn-md" id="btnStopCampaign">
-                    <i class="fa-solid fa-stop"></i> Dừng Chiến Dịch
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MODAL: GỬI VOICE THOẠI VÀO NHÓM ================= -->
-    <div class="modal-overlay" id="sendVoiceGroupModalOverlay">
-        <div class="modal-card glass-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-microphone-lines text-green"></i> Gửi Voice Thoại Vào Nhóm</h3>
-                <button class="btn-close-modal" onclick="closeVoiceGroupModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <div class="target-group-badge-card mb-3">
-                    <span class="text-muted">Nhóm nhận:</span>
-                    <h4 id="voiceModalGroupName" class="text-cyan">Tên Nhóm</h4>
-                    <code id="voiceModalGroupId">ID: ---</code>
-                </div>
-
-                <div class="voice-tabs-container mb-3">
-                    <button class="voice-tab-btn active" data-tab="uploadVoiceTab"><i class="fa-solid fa-cloud-arrow-up"></i> Tải File Âm Thanh</button>
-                    <button class="voice-tab-btn" data-tab="recordVoiceTab"><i class="fa-solid fa-microphone"></i> Thu Âm Trực Tiếp</button>
-                </div>
-
-                <!-- Tab 1: Upload File -->
-                <div class="voice-tab-pane active" id="uploadVoiceTab">
-                    <div class="file-drop-zone" id="voiceModalDropZone">
-                        <input type="file" id="voiceModalFileInput" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg,.opus,.webm" class="hidden">
-                        <div class="drop-content" id="voiceModalDropContent">
-                            <i class="fa-solid fa-music fa-2x text-amber"></i>
-                            <p>Chọn hoặc kéo thả file âm thanh vào đây</p>
-                            <span class="file-types-hint">Hỗ trợ .MP3, .M4A, .WAV, .AAC, .OGG...</span>
-                        </div>
-                        <div class="file-attached-info hidden" id="voiceModalAttachedInfo">
-                            <div class="attached-thumb"><i class="fa-solid fa-headphones text-green"></i></div>
-                            <div class="attached-meta">
-                                <h5 id="voiceModalFileName">audio.mp3</h5>
-                                <span id="voiceModalFileSize">0 KB</span>
-                            </div>
-                            <button type="button" class="btn-remove-file" id="btnRemoveVoiceModalFile"><i class="fa-solid fa-xmark"></i></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tab 2: Record Live -->
-                <div class="voice-tab-pane" id="recordVoiceTab">
-                    <div class="record-mic-box text-center p-4">
-                        <div class="mic-pulse-circle" id="modalMicPulse">
-                            <i class="fa-solid fa-microphone fa-3x"></i>
-                        </div>
-                        <div class="mic-timer mt-3" id="modalMicTimer">00:00</div>
-                        <div class="mic-status-text text-muted mt-1" id="modalMicStatus">Bấm nút bên dưới để bắt đầu thu âm</div>
-                        <div class="mic-actions-row mt-3">
-                            <button class="btn btn-primary btn-sm" id="btnStartModalMic"><i class="fa-solid fa-circle-dot text-red"></i> Bắt Đầu Thu</button>
-                            <button class="btn btn-success btn-sm hidden" id="btnStopModalMic"><i class="fa-solid fa-stop"></i> Dừng & Lưu Voice</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Live Audio Preview -->
-                <div class="audio-player-preview mt-3 hidden" id="voiceModalAudioPreviewWrap">
-                    <label class="form-label"><i class="fa-solid fa-play"></i> Nghe thử trước khi gửi:</label>
-                    <audio id="voiceModalAudioElement" controls class="w-100"></audio>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline btn-sm" onclick="closeVoiceGroupModal()">Hủy</button>
-                <button class="btn btn-gradient btn-sm" id="btnConfirmSendVoiceToGroup">
-                    <i class="fa-solid fa-paper-plane"></i> GỬI VOICE VÀO NHÓM NGAY
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MODAL: CẤU HÌNH SERVER KẾT NỐI (GITHUB PAGES) ================= -->
-    <div class="modal-overlay" id="serverConfigModalOverlay">
-        <div class="modal-card glass-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-server text-cyan"></i> Cài Đặt Máy Chủ API (Backend Server)</h3>
-                <button class="btn-close-modal" onclick="closeServerModal()"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-muted mb-3">
-                    Khi bạn mở web từ <strong>GitHub Pages</strong>, trình duyệt cần kết nối với máy chủ Node.js của bạn (Local Tunnel, Ngrok, Render hoặc VPS).
-                </p>
-                <div class="form-group">
-                    <label class="form-label">Địa chỉ Backend Server URL:</label>
-                    <input type="text" id="serverBaseUrlInput" class="form-control" placeholder="Để trống nếu chạy trực tiếp, hoặc nhập https://xxxx.loca.lt">
-                    <span class="file-types-hint">Ví dụ: <code>http://localhost:3000</code> hoặc <code>https://my-tool.loca.lt</code></span>
-                </div>
-                <div class="server-status-box mt-3" id="serverPingStatusBox">
-                    <span id="serverPingText">Chưa kiểm tra</span>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline btn-sm" id="btnTestServerPing"><i class="fa-solid fa-bolt"></i> Kiểm Tra Kết Nối</button>
-                <button class="btn btn-primary btn-sm" id="btnSaveServerConfig"><i class="fa-solid fa-floppy-disk"></i> Lưu & Áp Dụng</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MOBILE BOTTOM NAVIGATION BAR -->
-    <nav class="mobile-bottom-nav">
-        <button class="mobile-nav-btn active" data-tab="dashboard">
-            <i class="fa-solid fa-chart-pie"></i>
-            <span>Tổng Quan</span>
-        </button>
-        <button class="mobile-nav-btn" data-tab="chat">
-            <i class="fa-solid fa-comments"></i>
-            <span>Tin Nhắn</span>
-            <span class="mobile-unread-dot hidden" id="mobileChatUnreadDot"></span>
-        </button>
-        <button class="mobile-nav-btn" data-tab="groups">
-            <i class="fa-solid fa-users-rectangle"></i>
-            <span>Nhóm</span>
-        </button>
-        <button class="mobile-nav-btn" data-tab="campaign">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span>Gửi Ads</span>
-        </button>
-        <button class="mobile-nav-btn" data-tab="auth">
-            <i class="fa-solid fa-key"></i>
-            <span>Tài Khoản</span>
-        </button>
-    </nav>
-
-    <!-- TOAST NOTIFICATION CONTAINER -->
+    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- App Script -->
-    <script src="js/app.js"></script>
+    <!-- ==================== SCRIPTS ==================== -->
+    <!-- Firebase JS SDK (Compat v9 for Realtime Database) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- Inline UI Helpers (Đảm bảo chuyển tab và chọn chip hoạt động tức thời 100%) -->
+    <script>
+        function switchAuthTab(mode) {
+            const tabL = document.getElementById('tabAuthLogin');
+            const tabR = document.getElementById('tabAuthRegister');
+            const formL = document.getElementById('formAuthLogin');
+            const formR = document.getElementById('formAuthRegister');
+            if (mode === 'register') {
+                if (tabR) tabR.classList.add('active');
+                if (tabL) tabL.classList.remove('active');
+                if (formR) formR.style.display = 'block';
+                if (formL) formL.style.display = 'none';
+            } else {
+                if (tabL) tabL.classList.add('active');
+                if (tabR) tabR.classList.remove('active');
+                if (formL) formL.style.display = 'block';
+                if (formR) formR.style.display = 'none';
+            }
+        }
+
+        function switchZaloTab(mode) {
+            const tabQ = document.getElementById('tabZaloQr');
+            const tabC = document.getElementById('tabZaloCookie');
+            const secQ = document.getElementById('zaloQrSection');
+            const secC = document.getElementById('zaloCookieSection');
+            if (mode === 'cookie') {
+                if (tabC) tabC.classList.add('active');
+                if (tabQ) tabQ.classList.remove('active');
+                if (secC) secC.style.display = 'block';
+                if (secQ) secQ.style.display = 'none';
+            } else {
+                if (tabQ) tabQ.classList.add('active');
+                if (tabC) tabC.classList.remove('active');
+                if (secQ) secQ.style.display = 'block';
+                if (secC) secC.style.display = 'none';
+                if (typeof startZaloQrScan === 'function') startZaloQrScan();
+            }
+        }
+
+        function switchTeleTab(mode) {
+            const tabT = document.getElementById('tabTeleToken');
+            const tabU = document.getElementById('tabTeleUpload');
+            const secT = document.getElementById('teleTokenSection');
+            const secU = document.getElementById('teleUploadSection');
+            if (mode === 'upload') {
+                if (tabU) tabU.classList.add('active');
+                if (tabT) tabT.classList.remove('active');
+                if (secU) secU.style.display = 'block';
+                if (secT) secT.style.display = 'none';
+            } else {
+                if (tabT) tabT.classList.add('active');
+                if (tabU) tabU.classList.remove('active');
+                if (secT) secT.style.display = 'block';
+                if (secU) secU.style.display = 'none';
+            }
+        }
+
+        function selectAmountChip(val) {
+            const input = document.getElementById('chargingAmount');
+            if (input) input.value = val;
+            const chips = document.querySelectorAll('.chip-btn');
+            chips.forEach(c => c.classList.remove('active'));
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+        }
+    </script>
+
+    <!-- Dynamic In-Memory Secure Core Loader (Ẩn hoàn toàn file app.js khỏi F12 Sources) -->
+    <script>
+        (function() {
+            fetch('/api/sys/core.js', { cache: 'no-store' })
+                .then(function(res) {
+                    if (!res.ok) throw new Error('Mã nguồn hệ thống chưa sẵn sàng');
+                    return res.text();
+                })
+                .then(function(code) {
+                    new Function(code)();
+                })
+                .catch(function(err) {
+                    console.error('[Nexus Security Loader Error]:', err);
+                });
+        })();
+    </script>
 </body>
 </html>

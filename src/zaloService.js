@@ -18,8 +18,13 @@ class ZaloService extends EventEmitter {
         this.zalo = null;
         this.currentUser = null;
         this.listenerStarted = false;
+        this.onMessageCallback = null;
         this.initStorage();
         this.session = this.loadSession();
+    }
+
+    onMessage(callback) {
+        this.onMessageCallback = callback;
     }
 
     initStorage() {
@@ -190,6 +195,15 @@ class ZaloService extends EventEmitter {
                         text: data.content || '',
                         msgId: data.msgId
                     });
+
+                    // Callback cho Bot Manager xử lý lệnh tự động
+                    if (this.onMessageCallback) {
+                        try {
+                            this.onMessageCallback(msg, data, threadId, isGroup);
+                        } catch (botErr) {
+                            console.error('[Bot Hook Error]:', botErr);
+                        }
+                    }
                 });
 
                 this.api.listener.start();

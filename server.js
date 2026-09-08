@@ -8,9 +8,26 @@ const zaloService = require('./src/zaloService');
 const campaignEngine = require('./src/campaignEngine');
 const chatManager = require('./src/chatManager');
 const { exportMembersToFile } = require('./src/utils');
+const paymentService = require('./src/paymentService');
+const botManager = require('./src/botManager');
+const musicService = require('./src/musicService');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Gắn bộ hook xử lý tin nhắn cho Zalo Bot
+zaloService.onMessage(async (msg, data, threadId, isGroup) => {
+    try {
+        await botManager.handleZaloIncomingMessage({
+            ...data,
+            threadId,
+            isGroup,
+            type: isGroup ? 'group' : 'user'
+        }, zaloService);
+    } catch (e) {
+        console.error('[ZaloBot Hook Error]:', e.message);
+    }
+});
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -353,6 +370,181 @@ app.get('/api/campaign/events', (req, res) => {
         campaignEngine.removeListener('status_change', onStatusChange);
         campaignEngine.removeListener('complete', onComplete);
     });
+});
+
+// ==================== BOT SAAS & AUTOMATION ROUTES ====================
+
+// Đồng bộ thông tin người dùng từ Firebase Realtime Database
+app.post('/api/bot/sync-user', (req, res) => {
+    const { username, plan, balance, timeRemaining } = req.body;
+    botManager.setUser({ username, plan, timeRemaining });
+    res.json({ success: true, status: botManager.getUserStatus() });
+});
+
+// Lấy thông tin trạng thái các Bot & Thời gian sử dụng
+app.get('/api/bot/status', (req, res) => {
+    res.json({
+        success: true,
+        status: botManager.getUserStatus(),
+        approvedChats: botManager.approvedChats
+    });
+});
+
+// Bật / Tắt Zalo Bot
+app.post('/api/bot/zalo/start', (req, res) => {
+    try {
+        botManager.startZaloBot();
+        res.json({ success: true, status: botManager.getUserStatus() });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+app.post('/api/bot/zalo/stop', (req, res) => {
+    botManager.stopZaloBot();
+    res.json({ success: true, status: botManager.getUserStatus() });
+});
+
+// Bật / Tắt Telegram Bot
+app.post('/api/bot/tele/start', async (req, res) => {
+    try {
+        const { token, cookies, customScriptPath } = req.body;
+        const result = await botManager.startTeleBot({ token, cookies, customScriptPath });
+        res.json({ success: true, result, status: botManager.getUserStatus() });
+    } catch (err) {
+        res.status(400).json({ success: false, error: err.message });
+    }
+});
+
+app.post('/api/bot/tele/stop', (req, res) => {
+    botManager.stopTeleBot();
+    res.json({ success: true, status: botManager.getUserStatus() });
+});
+
+// Upload mã bot Telegram riêng (.js)
+app.post('/api/bot/tele/upload', upload.single('botFile'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, error: 'Chưa chọn file script bot (.js)' });
+    }
+    res.json({
+        success: true,
+        filePath: req.file.path,
+        filename: req.file.filename
+    });
+});
+
+// Quản lý danh sách chat Zalo được duyệt
+app.get('/api/bot/approved-chats', (req, res) => {
+    res.json({ success: true, approvedChats: botManager.approvedChats });
+});
+
+app.post('/api/bot/approved-chats', (req, res) => {
+    const { threadId, name } = req.body;
+    if (!threadId) return res.status(400).json({ success: false, error: 'Vui lòng cung cấp threadId' });
+    botManager.approvedChats[threadId] = {
+        approved: true,
+        approvedAt: Date.now(),
+        approvedBy: 'Dashboard Admin',
+        name: name || `Nhóm ${threadId}`
+    };
+    botManager.saveApprovedChats();
+    res.json({ success: true, approvedChats: botManager.approvedChats });
+});
+
+app.delete('/api/bot/approved-chats/:threadId', (req, res) => {
+    const { threadId } = req.params;
+    delete botManager.approvedChats[threadId];
+    botManager.saveApprovedChats();
+    res.json({ success: true, approvedChats: botManager.approvedChats });
+});
+
+// Realtime SSE cho Bot & Đồng hồ đếm ngược thời gian
+app.get('/api/bot/stream', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const sendEvent = (event, data) => {
+        res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+    };
+
+    sendEvent('status', botManager.getUserStatus());
+
+    const onTick = (data) => sendEvent('time_tick', data);
+    const onExpired = (data) => sendEvent('time_expired', data);
+    const onZaloStatus = (data) => sendEvent('zalo_status', data);
+    const onTeleStatus = (data) => sendEvent('tele_status', data);
+    const onTeleLog = (data) => sendEvent('tele_log', data);
+    const onUserUpdate = (data) => sendEvent('user_update', data);
+
+    botManager.on('time_tick', onTick);
+    botManager.on('time_expired', onExpired);
+    botManager.on('zalo_status', onZaloStatus);
+    botManager.on('tele_status', onTeleStatus);
+    botManager.on('tele_log', onTeleLog);
+    botManager.on('user_update', onUserUpdate);
+
+    req.on('close', () => {
+        botManager.removeListener('time_tick', onTick);
+        botManager.removeListener('time_expired', onExpired);
+        botManager.removeListener('zalo_status', onZaloStatus);
+        botManager.removeListener('tele_status', onTeleStatus);
+        botManager.removeListener('tele_log', onTeleLog);
+        botManager.removeListener('user_update', onUserUpdate);
+    });
+});
+
+// ==================== PAYMENT & UPGRADE ROUTES ====================
+
+// Gửi thẻ cào lên Doithevip.com Partner API
+app.post('/api/payment/charge', async (req, res) => {
+    try {
+        const { telco, code, serial, amount, username } = req.body;
+        const result = await paymentService.chargeCard({ telco, code, serial, amount, username });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Kiểm tra trạng thái thẻ cào
+app.post('/api/payment/check', async (req, res) => {
+    try {
+        const { telco, code, serial, amount, requestId } = req.body;
+        const result = await paymentService.checkCardStatus({ telco, code, serial, amount, requestId });
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Nâng cấp gói Pro (20,000 VND -> 100 Giờ)
+app.post('/api/payment/upgrade-pro', (req, res) => {
+    try {
+        const { username } = req.body;
+        // Cộng 100 giờ (360,000 giây)
+        const newStatus = botManager.addTimeToUser(360000, 'pro');
+        res.json({
+            success: true,
+            message: 'Chúc mừng! Đã kích hoạt thành công Gói Pro (100 tiếng chạy bot 24/7)!',
+            status: newStatus
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Core Dynamic Encrypted Loader (Ẩn source app.js khỏi F12)
+app.get('/api/sys/core.js', (req, res) => {
+    const coreFilePath = path.join(__dirname, 'public', 'js', 'core_bundle.js');
+    if (!fs.existsSync(coreFilePath)) {
+        return res.status(404).send('// Core not compiled');
+    }
+    const content = fs.readFileSync(coreFilePath, 'utf8');
+    res.setHeader('Content-Type', 'application/javascript');
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.send(content);
 });
 
 function startServer(autoOpen = true) {

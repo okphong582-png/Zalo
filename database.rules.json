@@ -1,0 +1,31 @@
+{
+  "rules": {
+    "users": {
+      "$username": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.hasChildren(['profile', 'password'])",
+        "profile": {
+          ".validate": "newData.hasChildren(['username']) && newData.child('username').val().matches(/^[a-zA-Z0-9_]{3,30}$/)"
+        },
+        "balance": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        },
+        "plan": {
+          ".validate": "newData.isString() && (newData.val() == 'free' || newData.val() == 'pro')"
+        },
+        "timeRemaining": {
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      }
+    },
+    "transactions": {
+      ".read": true,
+      ".write": true
+    },
+    "approved_chats": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}
