@@ -1173,12 +1173,633 @@ async function checkZaloAuthStatus() {
             if (data.isLoggedIn) {
                 badge.className = 'badge badge-success';
                 badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> Đã Đăng Nhập: ${data.user?.name || data.user?.uid}`;
+                loadBroadcastGroups();
             } else {
                 badge.className = 'badge badge-warning';
                 badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Chưa Đăng Nhập Zalo`;
             }
         }
     } catch (e) {}
+}
+
+// ==================== BROADCAST / GROUP CAMPAIGN AUTOMATION ====================
+function initBroadcastSystem() {
+    const groupSelect = document.getElementById('broadcastGroupSelect');
+    const refreshBtn = document.getElementById('btnRefreshBroadcastGroups');
+    const searchInput = document.getElementById('broadcastSearchMember');
+    const selectAllBtn = document.getElementById('btnSelectAllMembers');
+    const deselectAllBtn = document.getElementById('btnDeselectAllMembers');
+    const exportCsvBtn = document.getElementById('btnExportGroupMembers');
+
+    const fileInput = document.getElementById('broadcastFileInput');
+    const dropzone = document.getElementById('broadcastDropzone');
+    const clearFileBtn = document.getElementById('btnClearUploadedFile');
+
+    const startBtn = document.getElementById('btnStartCampaign');
+    const pauseBtn = document.getElementById('btnPauseCampaign');
+    const resumeBtn = document.getElementById('btnResumeCampaign');
+    const stopBtn = document.getElementById('btnStopCampaign');
+    const clearLogsBtn = document.getElementById('btnClearBroadcastLogs');
+
+    // Khi chọn nhóm trong dropdown
+    groupSelect?.addEventListener('change', (e) => {
+        const groupId = e.target.value;
+        if (groupId) {
+            loadBroadcastGroupMembers(groupId);
+        } else {
+            saasState.selectedGroup = null;
+            saasState.selectedGroupMembers = [];
+            saasState.checkedMemberIds.clear();
+            renderBroadcastMembers();
+        }
+    });
+
+    // Nút tải lại nhóm
+    refreshBtn?.addEventListener('click', () => {
+        loadBroadcastGroups();
+        showToast('Đang làm mới danh sách nhóm...', 'info');
+    });
+
+    // Tìm kiếm / lọc thành viên theo tên hoặc UID
+    searchInput?.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        renderBroadcastMembers(q);
+    });
+
+    // Chọn tất cả
+    selectAllBtn?.addEventListener('click', () => {
+        if (!saasState.selectedGroupMembers || saasState.selectedGroupMembers.length === 0) return;
+        saasState.selectedGroupMembers.forEach(m => saasState.checkedMemberIds.add(String(m.id || m.uid)));
+        updateMemberCheckboxes();
+        showToast(`Đã chọn toàn bộ ${saasState.selectedGroupMembers.length} thành viên`, 'info');
+    });
+
+    // Bỏ chọn tất cả
+    deselectAllBtn?.addEventListener('click', () => {
+        saasState.checkedMemberIds.clear();
+        updateMemberCheckboxes();
+        showToast('Đã bỏ chọn tất cả thành viên', 'info');
+    });
+
+    // Xuất CSV danh sách thành viên
+    exportCsvBtn?.addEventListener('click', () => {
+        const groupId = groupSelect?.value;
+        if (!groupId) {
+            showToast('Vui lòng chọn một nhóm Zalo trước khi xuất danh sách!', 'warning');
+            return;
+        }
+        window.open(`/api/groups/${groupId}/export?format=csv`, '_blank');
+    });
+
+    // Dropzone tải lên tệp đính kèm (Ảnh, Âm thanh, Video, File)
+    if (dropzone && fileInput) {
+        ['dragenter', 'dragover'].forEach(evtName => {
+            dropzone.addEventListener(evtName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(evtName => {
+            dropzone.addEventListener(evtName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('dragover');
+            });
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                uploadBroadcastFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                uploadBroadcastFile(e.target.files[0]);
+            }
+        });
+    }
+
+    // Xóa file đính kèm
+    clearFileBtn?.addEventListener('click', () => {
+        clearBroadcastFile();
+    });
+
+    // Nút điều khiển chiến dịch
+    startBtn?.addEventListener('click', startBroadcastCampaign);
+    pauseBtn?.addEventListener('click', pauseBroadcastCampaign);
+    resumeBtn?.addEventListener('click', resumeBroadcastCampaign);
+    stopBtn?.addEventListener('click', stopBroadcastCampaign);
+
+    clearLogsBtn?.addEventListener('click', () => {
+        const term = document.getElementById('broadcastTerminalLog');
+        if (term) term.innerHTML = '<div class="term-line info">[Đã xóa nhật ký].</div>';
+    });
+
+    // Kết nối SSE theo dõi realtime
+    connectCampaignEvents();
+    fetchCampaignStatus();
+}
+
+async function loadBroadcastGroups() {
+    const select = document.getElementById('broadcastGroupSelect');
+    const badge = document.getElementById('broadcastGroupTotalBadge');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">-- Đang tải danh sách nhóm Zalo... --</option>';
+
+    try {
+        const res = await fetch('/api/groups');
+        const data = await res.json();
+
+        if (data.success && Array.isArray(data.groups)) {
+            saasState.groups = data.groups;
+            if (badge) badge.textContent = `${data.groups.length} nhóm`;
+
+            if (data.groups.length === 0) {
+                select.innerHTML = '<option value="">Không tìm thấy nhóm Zalo nào</option>';
+                return;
+            }
+
+            select.innerHTML = '<option value="">-- Chọn nhóm Zalo (' + data.groups.length + ' nhóm) --</option>' +
+                data.groups.map(g => `<option value="${g.id || g.groupId}">${escapeHtml(g.name || g.groupName || 'Nhóm ' + g.id)} (${g.totalMember || g.memberCount || 0} thành viên)</option>`).join('');
+        } else {
+            select.innerHTML = '<option value="">Chưa đăng nhập Zalo hoặc không có quyền truy cập nhóm</option>';
+            if (badge) badge.textContent = '0 nhóm';
+        }
+    } catch (e) {
+        select.innerHTML = `<option value="">Lỗi: ${e.message}</option>`;
+    }
+}
+
+async function loadBroadcastGroupMembers(groupId) {
+    const container = document.getElementById('broadcastMembersContainer');
+    if (container) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px 10px; color: var(--cyan-400);">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                <div>Đang tải danh sách thành viên từ nhóm Zalo...</div>
+            </div>
+        `;
+    }
+
+    try {
+        const res = await fetch(`/api/groups/${groupId}/members`);
+        const result = await res.json();
+
+        if (result.success && result.data && Array.isArray(result.data.members)) {
+            saasState.selectedGroup = result.data;
+            saasState.selectedGroupMembers = result.data.members;
+            saasState.checkedMemberIds.clear();
+
+            // Mặc định chọn tất cả thành viên trong nhóm
+            saasState.selectedGroupMembers.forEach(m => {
+                saasState.checkedMemberIds.add(String(m.id || m.uid));
+            });
+
+            renderBroadcastMembers();
+            showToast(`Đã nạp thành công ${result.data.members.length} thành viên!`, 'success');
+        } else {
+            if (container) {
+                container.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--red-500);"><i class="fa-solid fa-triangle-exclamation"></i> Không thể tải thành viên: ${result.error || 'Lỗi kết nối'}</div>`;
+            }
+        }
+    } catch (e) {
+        if (container) {
+            container.innerHTML = `<div style="text-align: center; padding: 30px; color: var(--red-500);"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi: ${e.message}</div>`;
+        }
+    }
+}
+
+function renderBroadcastMembers(filterText = '') {
+    const container = document.getElementById('broadcastMembersContainer');
+    if (!container) return;
+
+    let members = saasState.selectedGroupMembers || [];
+    if (filterText) {
+        const q = filterText.toLowerCase();
+        members = members.filter(m => {
+            const name = (m.name || m.displayName || '').toLowerCase();
+            const uid = String(m.id || m.uid || '').toLowerCase();
+            return name.includes(q) || uid.includes(q);
+        });
+    }
+
+    if (members.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 30px 10px; color: var(--text-muted); font-size: 0.85rem;">
+                <i class="fa-solid fa-user-slash" style="font-size: 1.6rem; margin-bottom: 8px; opacity: 0.4;"></i>
+                <div>Không tìm thấy thành viên nào phù hợp.</div>
+            </div>
+        `;
+        updateMemberCounter();
+        return;
+    }
+
+    container.innerHTML = members.map(m => {
+        const uid = String(m.id || m.uid);
+        const isChecked = saasState.checkedMemberIds.has(uid);
+        const avatarUrl = m.avatar || m.avatarUrl || '';
+        const role = m.role === 'admin' || m.isAdmin ? 'Trưởng nhóm' :
+                     m.role === 'deputy' || m.isDeputy ? 'Phó nhóm' : '';
+
+        return `
+            <div class="member-item ${isChecked ? 'selected' : ''}" onclick="toggleMemberSelection('${uid}')" id="memberItem_${uid}">
+                <input type="checkbox" class="member-checkbox" id="chk_${uid}" ${isChecked ? 'checked' : ''} onclick="event.stopPropagation(); toggleMemberSelection('${uid}')">
+                ${avatarUrl ?
+                    `<img src="${avatarUrl}" class="member-avatar" onerror="this.outerHTML='<div class=\\'member-avatar\\'><i class=\\'fa-solid fa-user\\'></i></div>'">` :
+                    `<div class="member-avatar"><i class="fa-solid fa-user"></i></div>`
+                }
+                <div class="member-info">
+                    <div class="member-name-row">
+                        <span class="member-name">${escapeHtml(m.name || m.displayName || 'Thành viên ' + uid)}</span>
+                        ${role ? `<span class="member-role-badge">${role}</span>` : ''}
+                    </div>
+                    <div class="member-id">UID: ${uid}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    updateMemberCounter();
+}
+
+window.toggleMemberSelection = function(uid) {
+    uid = String(uid);
+    if (saasState.checkedMemberIds.has(uid)) {
+        saasState.checkedMemberIds.delete(uid);
+    } else {
+        saasState.checkedMemberIds.add(uid);
+    }
+    updateMemberItemUi(uid);
+    updateMemberCounter();
+};
+
+function updateMemberItemUi(uid) {
+    const item = document.getElementById(`memberItem_${uid}`);
+    const chk = document.getElementById(`chk_${uid}`);
+    const isChecked = saasState.checkedMemberIds.has(uid);
+    if (item) {
+        if (isChecked) item.classList.add('selected');
+        else item.classList.remove('selected');
+    }
+    if (chk) {
+        chk.checked = isChecked;
+    }
+}
+
+function updateMemberCheckboxes() {
+    saasState.selectedGroupMembers.forEach(m => {
+        updateMemberItemUi(String(m.id || m.uid));
+    });
+    updateMemberCounter();
+}
+
+function updateMemberCounter() {
+    const badge = document.getElementById('broadcastSelectedCountBadge');
+    if (!badge) return;
+    const total = (saasState.selectedGroupMembers || []).length;
+    const selected = saasState.checkedMemberIds.size;
+    badge.innerHTML = `Đã chọn: <strong>${selected}</strong> / ${total}`;
+}
+
+async function uploadBroadcastFile(file) {
+    if (!file) return;
+
+    const preview = document.getElementById('broadcastFilePreview');
+    const previewMedia = document.getElementById('broadcastFilePreviewMedia');
+    const fileNameEl = document.getElementById('broadcastFileName');
+    const fileSizeEl = document.getElementById('broadcastFileSize');
+    const voiceWrapper = document.getElementById('voiceOptionWrapper');
+
+    showToast(`Đang tải lên: ${file.name}...`, 'info');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+
+        if (data.success && data.file) {
+            saasState.broadcastUploadedFile = data.file;
+
+            if (fileNameEl) fileNameEl.textContent = data.file.name;
+            if (fileSizeEl) fileSizeEl.textContent = formatBytes(data.file.size);
+
+            if (previewMedia) {
+                if (data.file.mimetype.startsWith('image/')) {
+                    previewMedia.innerHTML = `<img src="${data.file.url}" class="file-preview-thumb" alt="Preview">`;
+                    if (voiceWrapper) voiceWrapper.style.display = 'none';
+                } else if (data.file.mimetype.startsWith('audio/')) {
+                    previewMedia.innerHTML = `<div class="file-preview-icon text-cyan"><i class="fa-solid fa-file-audio"></i></div>`;
+                    if (voiceWrapper) voiceWrapper.style.display = 'block';
+                } else if (data.file.mimetype.startsWith('video/')) {
+                    previewMedia.innerHTML = `<div class="file-preview-icon text-amber"><i class="fa-solid fa-file-video"></i></div>`;
+                    if (voiceWrapper) voiceWrapper.style.display = 'none';
+                } else {
+                    previewMedia.innerHTML = `<div class="file-preview-icon text-green"><i class="fa-solid fa-file-zipper"></i></div>`;
+                    if (voiceWrapper) voiceWrapper.style.display = 'none';
+                }
+            }
+
+            if (preview) preview.style.display = 'flex';
+            showToast('Tải lên tệp đính kèm thành công!', 'success');
+        } else {
+            showToast(data.error || 'Lỗi tải tệp!', 'error');
+        }
+    } catch (e) {
+        showToast(`Lỗi upload: ${e.message}`, 'error');
+    }
+}
+
+function clearBroadcastFile() {
+    saasState.broadcastUploadedFile = null;
+    const preview = document.getElementById('broadcastFilePreview');
+    const fileInput = document.getElementById('broadcastFileInput');
+    const voiceWrapper = document.getElementById('voiceOptionWrapper');
+    if (preview) preview.style.display = 'none';
+    if (fileInput) fileInput.value = '';
+    if (voiceWrapper) voiceWrapper.style.display = 'none';
+    showToast('Đã gỡ tệp đính kèm.', 'info');
+}
+
+function formatBytes(bytes) {
+    if (!bytes || bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+async function startBroadcastCampaign() {
+    if (!saasState.zaloLoggedIn) {
+        showToast('Vui lòng đăng nhập Zalo trước khi chạy chiến dịch!', 'warning');
+        return;
+    }
+
+    if (saasState.timeRemaining <= 0) {
+        showToast('Thời gian sử dụng bot đã hết! Vui lòng nạp thẻ hoặc nâng cấp gói Pro 20k.', 'warning');
+        return;
+    }
+
+    const selectedIds = Array.from(saasState.checkedMemberIds);
+    if (selectedIds.length === 0) {
+        showToast('Vui lòng chọn ít nhất 1 thành viên trong danh sách để gửi!', 'warning');
+        return;
+    }
+
+    const text = document.getElementById('broadcastCampaignText')?.value.trim();
+    const uploadedFile = saasState.broadcastUploadedFile;
+
+    if (!text && !uploadedFile) {
+        showToast('Vui lòng nhập nội dung tin nhắn hoặc tải lên tệp/ảnh đính kèm!', 'warning');
+        return;
+    }
+
+    const name = document.getElementById('broadcastCampaignName')?.value.trim() || 'Chiến Dịch Nhóm';
+    const isVoice = document.getElementById('broadcastIsVoice')?.checked || false;
+    const minDelay = parseInt(document.getElementById('broadcastMinDelay')?.value, 10) || 5;
+    const maxDelay = parseInt(document.getElementById('broadcastMaxDelay')?.value, 10) || 9;
+    const batchSize = parseInt(document.getElementById('broadcastBatchSize')?.value, 10) || 0;
+    const batchPauseSeconds = parseInt(document.getElementById('broadcastBatchPause')?.value, 10) || 30;
+    const excludeSelf = document.getElementById('broadcastExcludeSelf')?.checked ?? true;
+
+    // Filter targets
+    const memberMap = new Map();
+    (saasState.selectedGroupMembers || []).forEach(m => memberMap.set(String(m.id || m.uid), m));
+    const targets = selectedIds.map(id => {
+        const m = memberMap.get(id);
+        return {
+            id: id,
+            name: m ? (m.name || m.displayName || id) : id
+        };
+    });
+
+    const startBtn = document.getElementById('btnStartCampaign');
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang khởi động...';
+    }
+
+    try {
+        const res = await fetch('/api/campaign/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name,
+                targets,
+                textTemplate: text,
+                filePath: uploadedFile ? uploadedFile.path : null,
+                isVoice,
+                minDelay,
+                maxDelay,
+                excludeSelf,
+                batchSize,
+                batchPauseSeconds
+            })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+            showToast(`Chiến dịch "${name}" đã bắt đầu gửi cho ${targets.length} thành viên!`, 'success');
+            appendBroadcastLog(`[Khởi chạy]: Chiến dịch "${name}" bắt đầu gửi cho ${targets.length} mục tiêu.`, 'success');
+            fetchCampaignStatus();
+        } else {
+            showToast(data.error || 'Không thể bắt đầu chiến dịch!', 'error');
+            appendBroadcastLog(`[Lỗi]: ${data.error}`, 'error');
+        }
+    } catch (e) {
+        showToast(e.message, 'error');
+    } finally {
+        if (startBtn) {
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Bắt Đầu Gửi Tin';
+        }
+    }
+}
+
+async function pauseBroadcastCampaign() {
+    try {
+        const res = await fetch('/api/campaign/pause', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Đã tạm dừng gửi tin.', 'info');
+            appendBroadcastLog('[Tạm dừng]: Đang tạm hoãn gửi tin theo yêu cầu.', 'warning');
+            updateCampaignControls('paused');
+        }
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
+}
+
+async function resumeBroadcastCampaign() {
+    try {
+        const res = await fetch('/api/campaign/resume', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Đã tiếp tục gửi tin!', 'success');
+            appendBroadcastLog('[Tiếp tục]: Tiếp tục gửi tin cho các thành viên còn lại.', 'success');
+            updateCampaignControls('running');
+        }
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
+}
+
+async function stopBroadcastCampaign() {
+    if (!confirm('Bạn có chắc muốn dừng hẳn chiến dịch hiện tại không?')) return;
+    try {
+        const res = await fetch('/api/campaign/stop', { method: 'POST' });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Đã dừng hẳn chiến dịch.', 'info');
+            appendBroadcastLog('[Dừng hẳn]: Chiến dịch đã kết thúc theo yêu cầu người dùng.', 'error');
+            updateCampaignControls('stopped');
+        }
+    } catch (e) {
+        showToast(e.message, 'error');
+    }
+}
+
+function connectCampaignEvents() {
+    if (saasState.campaignEventSource) {
+        saasState.campaignEventSource.close();
+        saasState.campaignEventSource = null;
+    }
+
+    try {
+        saasState.campaignEventSource = new EventSource('/api/campaign/events');
+
+        saasState.campaignEventSource.addEventListener('log', (e) => {
+            const data = JSON.parse(e.data);
+            appendBroadcastLog(data.text || data.message || '', data.level || 'info');
+        });
+
+        saasState.campaignEventSource.addEventListener('progress', (e) => {
+            const data = JSON.parse(e.data);
+            updateCampaignProgress(data);
+        });
+
+        saasState.campaignEventSource.addEventListener('status_change', (e) => {
+            const data = JSON.parse(e.data);
+            updateCampaignControls(data.status);
+        });
+
+        saasState.campaignEventSource.addEventListener('complete', (e) => {
+            const data = JSON.parse(e.data);
+            updateCampaignControls('completed');
+            showToast(`🎉 Chiến dịch hoàn tất! Đã gửi thành công ${data.success}/${data.total} tin nhắn.`, 'success');
+            appendBroadcastLog(`[Hoàn thành]: Toàn bộ chiến dịch đã gửi xong! Thành công: ${data.success}, Thất bại: ${data.failed}.`, 'success');
+        });
+
+        saasState.campaignEventSource.addEventListener('error', () => {
+            // Reconnect automatically handled by browser EventSource
+        });
+    } catch (e) {
+        console.warn('SSE Campaign EventSource:', e);
+    }
+}
+
+async function fetchCampaignStatus() {
+    try {
+        const res = await fetch('/api/campaign/status');
+        const data = await res.json();
+        if (data && data.status) {
+            updateCampaignControls(data.status);
+            if (data.campaign) {
+                updateCampaignProgress(data.campaign);
+            }
+        }
+    } catch (e) {}
+}
+
+function updateCampaignControls(status) {
+    const startBtn = document.getElementById('btnStartCampaign');
+    const pauseBtn = document.getElementById('btnPauseCampaign');
+    const resumeBtn = document.getElementById('btnResumeCampaign');
+    const stopBtn = document.getElementById('btnStopCampaign');
+    const badge = document.getElementById('broadcastStatusBadge');
+
+    if (status === 'running') {
+        if (startBtn) startBtn.style.display = 'none';
+        if (pauseBtn) pauseBtn.style.display = 'inline-flex';
+        if (resumeBtn) resumeBtn.style.display = 'none';
+        if (stopBtn) stopBtn.style.display = 'inline-flex';
+        if (badge) {
+            badge.className = 'badge badge-success';
+            badge.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang Gửi Tin...';
+        }
+    } else if (status === 'paused') {
+        if (startBtn) startBtn.style.display = 'none';
+        if (pauseBtn) pauseBtn.style.display = 'none';
+        if (resumeBtn) resumeBtn.style.display = 'inline-flex';
+        if (stopBtn) stopBtn.style.display = 'inline-flex';
+        if (badge) {
+            badge.className = 'badge badge-warning';
+            badge.innerHTML = '<i class="fa-solid fa-pause"></i> Đang Tạm Dừng';
+        }
+    } else { // idle, completed, stopped
+        if (startBtn) startBtn.style.display = 'inline-flex';
+        if (pauseBtn) pauseBtn.style.display = 'none';
+        if (resumeBtn) resumeBtn.style.display = 'none';
+        if (stopBtn) stopBtn.style.display = 'none';
+        if (badge) {
+            if (status === 'completed') {
+                badge.className = 'badge badge-success';
+                badge.innerHTML = '<i class="fa-solid fa-circle-check"></i> Đã Hoàn Thành';
+            } else if (status === 'stopped') {
+                badge.className = 'badge badge-danger';
+                badge.innerHTML = '<i class="fa-solid fa-ban"></i> Đã Hủy Bỏ';
+            } else {
+                badge.className = 'badge badge-primary';
+                badge.innerHTML = 'Chờ bắt đầu';
+            }
+        }
+    }
+}
+
+function updateCampaignProgress(p) {
+    const total = p.total || 0;
+    const sent = p.sent || 0;
+    const success = p.success || 0;
+    const failed = p.failed || 0;
+    const percentage = total > 0 ? Math.round((sent / total) * 100) : 0;
+
+    const pBar = document.getElementById('broadcastProgressBar');
+    const pText = document.getElementById('broadcastProgressText');
+    const statTotal = document.getElementById('statTotalTargets');
+    const statSent = document.getElementById('statSentCount');
+    const statSuccess = document.getElementById('statSuccessCount');
+    const statFailed = document.getElementById('statFailedCount');
+
+    if (pBar) pBar.style.width = `${percentage}%`;
+    if (pText) pText.textContent = `${percentage}% (${sent}/${total})`;
+    if (statTotal) statTotal.textContent = total;
+    if (statSent) statSent.textContent = sent;
+    if (statSuccess) statSuccess.textContent = success;
+    if (statFailed) statFailed.textContent = failed;
+}
+
+function appendBroadcastLog(text, level = 'info') {
+    const term = document.getElementById('broadcastTerminalLog');
+    if (!term) return;
+
+    const line = document.createElement('div');
+    line.className = `term-line ${level}`;
+    const timeStr = new Date().toLocaleTimeString('vi-VN');
+    line.textContent = `[${timeStr}] ${text}`;
+    term.appendChild(line);
+
+    while (term.children.length > 150) {
+        term.removeChild(term.firstChild);
+    }
+    term.scrollTop = term.scrollHeight;
 }
 
 // ==================== TABS NAVIGATION ====================
@@ -1195,6 +1816,11 @@ function initNavigation() {
             btn.classList.add('active');
             const targetSec = document.getElementById(target);
             if (targetSec) targetSec.classList.add('active');
+
+            // Khi click sang tab Broadcast mà chưa tải nhóm -> tải ngay
+            if (target === 'sectionBroadcast' && saasState.zaloLoggedIn && (!saasState.groups || saasState.groups.length === 0)) {
+                loadBroadcastGroups();
+            }
         });
     });
 }
@@ -1206,6 +1832,7 @@ function bootNexusApp() {
         initGatekeeperAuth();
         initNavigation();
         initZaloBotControls();
+        initBroadcastSystem();
         initTeleBotControls();
         initPaymentSystem();
         renderCardHistory();

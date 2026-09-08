@@ -151,6 +151,9 @@
         <button type="button" class="nav-tab-btn active" data-target="sectionZaloBot" onclick="switchMainTab('sectionZaloBot')">
             <i class="fa-solid fa-comment-dots text-cyan"></i> Bot Zalo Pro
         </button>
+        <button type="button" class="nav-tab-btn" data-target="sectionBroadcast" onclick="switchMainTab('sectionBroadcast')">
+            <i class="fa-solid fa-paper-plane text-emerald"></i> Gửi Tin Tự Động Nhóm
+        </button>
         <button type="button" class="nav-tab-btn" data-target="sectionTeleBot" onclick="switchMainTab('sectionTeleBot')">
             <i class="fa-brands fa-telegram text-cyan"></i> Bot Telegram Cloud
         </button>
@@ -286,6 +289,262 @@
                             </div>
                         </div>
                     </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== TAB: GỬI TIN TỰ ĐỘNG THÀNH VIÊN NHÓM ==================== -->
+        <section class="saas-section" id="sectionBroadcast">
+            <div class="dashboard-grid">
+                
+                <!-- CỘT 1: CHỌN NHÓM & THÀNH VIÊN MỤC TIÊU (col-5) -->
+                <div class="col-5">
+                    <div class="saas-card" style="height: 100%;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-users-viewfinder text-cyan"></i>
+                                <span>1. Chọn Nhóm & Thành Viên</span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-secondary" id="btnRefreshBroadcastGroups" title="Tải lại danh sách nhóm">
+                                <i class="fa-solid fa-rotate"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <!-- Chọn nhóm -->
+                            <div class="form-group">
+                                <label class="form-label" style="display: flex; justify-content: space-between;">
+                                    <span>Chọn Nhóm Zalo</span>
+                                    <span class="badge badge-primary" id="broadcastGroupTotalBadge">0 nhóm</span>
+                                </label>
+                                <select class="form-control" id="broadcastGroupSelect">
+                                    <option value="">-- Bấm để tải danh sách nhóm --</option>
+                                </select>
+                            </div>
+
+                            <!-- Tìm kiếm thành viên -->
+                            <div class="form-group">
+                                <label class="form-label">Tìm Kiếm Thành Viên</label>
+                                <div style="position: relative;">
+                                    <input type="text" class="form-control" id="broadcastSearchMember" placeholder="Lọc theo tên hoặc UID thành viên...">
+                                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none;"></i>
+                                </div>
+                            </div>
+
+                            <!-- Công cụ chọn nhanh & thống kê -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                                <div style="display: flex; gap: 6px;">
+                                    <button type="button" class="btn btn-sm btn-secondary" id="btnSelectAllMembers">
+                                        <i class="fa-solid fa-check-double"></i> Chọn Hết
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-secondary" id="btnDeselectAllMembers">
+                                        <i class="fa-solid fa-square"></i> Bỏ Chọn
+                                    </button>
+                                </div>
+                                <span class="badge badge-success" id="broadcastSelectedCountBadge">
+                                    Đã chọn: <strong>0</strong>
+                                </span>
+                            </div>
+
+                            <!-- Danh sách thành viên (Cuộn mượt) -->
+                            <div class="member-list-container" id="broadcastMembersContainer">
+                                <div style="text-align: center; padding: 40px 10px; color: var(--text-muted); font-size: 0.88rem;" id="broadcastMemberPlaceholder">
+                                    <i class="fa-solid fa-users" style="font-size: 2rem; margin-bottom: 10px; opacity: 0.4;"></i>
+                                    <div>Vui lòng chọn một nhóm ở trên để tải danh sách thành viên.</div>
+                                </div>
+                            </div>
+
+                            <!-- Tùy chọn xuất danh sách -->
+                            <div style="margin-top: 14px; display: flex; justify-content: flex-end;">
+                                <button type="button" class="btn btn-sm btn-secondary" id="btnExportGroupMembers" style="font-size: 0.78rem;">
+                                    <i class="fa-solid fa-file-csv"></i> Xuất Danh Sách Thành Viên (CSV)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT 2: SOẠN NỘI DUNG, ĐÍNH KÈM FILE/ẢNH & ĐIỀU KHIỂN CHIẾN DỊCH (col-7) -->
+                <div class="col-7">
+                    
+                    <!-- Card Soạn Tin Nhắn & Tệp -->
+                    <div class="saas-card" style="margin-bottom: 20px;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-pen-to-square text-emerald"></i>
+                                <span>2. Soạn Thảo Tin Nhắn & Tệp Đính Kèm</span>
+                            </div>
+                            <span class="badge badge-warning">
+                                <i class="fa-solid fa-shield-halved"></i> Chống Checkpoint
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <!-- Tên chiến dịch -->
+                            <div class="form-group">
+                                <label class="form-label">Tên Chiến Dịch</label>
+                                <input type="text" class="form-control" id="broadcastCampaignName" value="Chiến Dịch Gửi Tin Thành Viên Nhóm" placeholder="Nhập tên chiến dịch...">
+                            </div>
+
+                            <!-- Nội dung tin nhắn & spintax tags -->
+                            <div class="form-group">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label class="form-label" style="margin-bottom: 0;">Nội Dung Tin Nhắn</label>
+                                    <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+                                        <span class="tag-pill" onclick="insertSpintaxTag('{name}')" title="Chèn tên thành viên">{name}</span>
+                                        <span class="tag-pill" onclick="insertSpintaxTag('{Chào|Hi|Hello}')" title="Chèn lời chào ngẫu nhiên">{Chào|Hi|Hello}</span>
+                                        <span class="tag-pill" onclick="insertSpintaxTag('{bạn|anh|chị}')" title="Chèn đại từ ngẫu nhiên">{bạn|anh|chị}</span>
+                                    </div>
+                                </div>
+                                <textarea class="form-control font-mono" id="broadcastCampaignText" rows="4" placeholder="Nhập nội dung gửi riêng cho từng thành viên...&#10;VD: {Chào bạn|Hi|Hello} {name}! Mình gửi bạn tài liệu nhé."></textarea>
+                                <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 5px;">
+                                    <i class="fa-solid fa-circle-info text-cyan"></i> Hỗ trợ SpinTax dạng <code>{Từ 1|Từ 2|Từ 3}</code> để mỗi thành viên nhận nội dung khác nhau, tránh bị Zalo chặn spam.
+                                </div>
+                            </div>
+
+                            <!-- Dropzone Tải Lên Tệp Đính Kèm (Ảnh, Video, Âm thanh / Voice, File) -->
+                            <div class="form-group">
+                                <label class="form-label">Tệp Đính Kèm (Hình ảnh, Video, Âm thanh / Voice Note, File Zip...)</label>
+                                
+                                <div class="dropzone-area" id="broadcastDropzone" onclick="document.getElementById('broadcastFileInput').click()">
+                                    <input type="file" id="broadcastFileInput" style="display: none;" accept="image/*,audio/*,video/*,.zip,.rar,.pdf,.docx,.txt">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--cyan-400); margin-bottom: 8px;"></i>
+                                    <div style="font-size: 0.9rem; font-weight: 600; color: #fff;">Kéo thả tệp hoặc bấm vào đây để chọn tệp tải lên</div>
+                                    <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Hỗ trợ Ảnh (JPG, PNG, GIF), Âm thanh (MP3, M4A, OGG), Video (MP4) và File tài liệu</div>
+                                </div>
+
+                                <!-- Khung xem trước tệp khi đã tải lên -->
+                                <div id="broadcastFilePreview" class="file-preview-card" style="display: none;">
+                                    <div id="broadcastFilePreviewMedia">
+                                        <!-- Thumbnail ảnh hoặc icon -->
+                                    </div>
+                                    <div style="flex: 1; min-width: 0;">
+                                        <div id="broadcastFileName" style="font-size: 0.86rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">tập_tin.jpg</div>
+                                        <div id="broadcastFileSize" style="font-size: 0.74rem; color: var(--text-muted);">0 KB</div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger" id="btnClearUploadedFile" title="Xóa tệp đính kèm">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <!-- Tùy chọn Voice Note khi upload âm thanh -->
+                                <div id="voiceOptionWrapper" style="display: none; margin-top: 10px; background: rgba(6, 182, 212, 0.08); border: 1px solid rgba(6, 182, 212, 0.25); border-radius: var(--radius-sm); padding: 10px 14px;">
+                                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin: 0;">
+                                        <input type="checkbox" id="broadcastIsVoice" checked style="width: 17px; height: 17px; accent-color: var(--cyan-500); cursor: pointer;">
+                                        <span style="font-size: 0.85rem; color: #fff;">
+                                            <i class="fa-solid fa-waveform-lines text-cyan"></i> Gửi dạng <strong>Tin Nhắn Thoại (Voice Note / Sóng Âm)</strong> chính thức của Zalo
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Cấu hình chống spam / Anti-checkpoint -->
+                            <div style="background: rgba(0, 0, 0, 0.25); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 14px; margin-top: 14px;">
+                                <div style="font-size: 0.84rem; font-weight: 600; margin-bottom: 10px; color: var(--cyan-400); display: flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-sliders"></i> Cài Đặt Giãn Cách An Toàn
+                                </div>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+                                    <div>
+                                        <label style="font-size: 0.74rem; color: var(--text-muted);">Tối thiểu (giây)</label>
+                                        <input type="number" class="form-control" id="broadcastMinDelay" value="5" min="2" max="120">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.74rem; color: var(--text-muted);">Tối đa (giây)</label>
+                                        <input type="number" class="form-control" id="broadcastMaxDelay" value="9" min="3" max="120">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.74rem; color: var(--text-muted);">Lô gửi (số tin)</label>
+                                        <input type="number" class="form-control" id="broadcastBatchSize" value="10" min="0" max="100">
+                                    </div>
+                                    <div>
+                                        <label style="font-size: 0.74rem; color: var(--text-muted);">Nghỉ giữa lô (giây)</label>
+                                        <input type="number" class="form-control" id="broadcastBatchPause" value="30" min="5" max="300">
+                                    </div>
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    <label style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); cursor: pointer; margin: 0;">
+                                        <input type="checkbox" id="broadcastExcludeSelf" checked style="accent-color: var(--cyan-500);">
+                                        <span>Không gửi tin nhắn cho chính tài khoản của tôi</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Bảng Điều Khiển Tiến Trình & Realtime Monitor -->
+                    <div class="saas-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-chart-line text-cyan"></i>
+                                <span>3. Điều Khiển & Theo Dõi Tiến Trình Realtime</span>
+                            </div>
+                            <span class="badge badge-primary" id="broadcastStatusBadge">Chờ bắt đầu</span>
+                        </div>
+                        <div class="card-body">
+                            <!-- Nút điều khiển -->
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px;">
+                                <button type="button" class="btn btn-primary" id="btnStartCampaign" style="flex: 2; min-width: 140px;">
+                                    <i class="fa-solid fa-paper-plane"></i> Bắt Đầu Gửi Tin
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="btnPauseCampaign" style="flex: 1; display: none;">
+                                    <i class="fa-solid fa-pause"></i> Tạm Dừng
+                                </button>
+                                <button type="button" class="btn btn-primary" id="btnResumeCampaign" style="flex: 1; display: none;">
+                                    <i class="fa-solid fa-play"></i> Tiếp Tục
+                                </button>
+                                <button type="button" class="btn btn-danger" id="btnStopCampaign" style="flex: 1; display: none;">
+                                    <i class="fa-solid fa-stop"></i> Dừng Hẳn
+                                </button>
+                            </div>
+
+                            <!-- Thanh tiến trình phần trăm -->
+                            <div style="margin-bottom: 16px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 6px;">
+                                    <span style="color: var(--text-muted);">Tiến độ gửi tin:</span>
+                                    <strong id="broadcastProgressText" class="font-mono text-cyan">0% (0/0)</strong>
+                                </div>
+                                <div class="progress-wrap">
+                                    <div class="progress-bar-fill" id="broadcastProgressBar"></div>
+                                </div>
+                            </div>
+
+                            <!-- Lưới thống kê 4 ô -->
+                            <div class="stats-counter-grid">
+                                <div class="stat-counter-card">
+                                    <div class="stat-counter-val" id="statTotalTargets">0</div>
+                                    <div class="stat-counter-lbl">Mục Tiêu</div>
+                                </div>
+                                <div class="stat-counter-card">
+                                    <div class="stat-counter-val text-cyan" id="statSentCount">0</div>
+                                    <div class="stat-counter-lbl">Đã Gửi</div>
+                                </div>
+                                <div class="stat-counter-card">
+                                    <div class="stat-counter-val text-green" id="statSuccessCount">0</div>
+                                    <div class="stat-counter-lbl">Thành Công</div>
+                                </div>
+                                <div class="stat-counter-card">
+                                    <div class="stat-counter-val text-red" id="statFailedCount">0</div>
+                                    <div class="stat-counter-lbl">Thất Bại</div>
+                                </div>
+                            </div>
+
+                            <!-- Live Terminal Console Log -->
+                            <div style="margin-top: 18px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted);">
+                                        <i class="fa-solid fa-terminal text-cyan"></i> Nhật Ký Hoạt Động (Live Terminal)
+                                    </span>
+                                    <button type="button" class="btn btn-sm btn-secondary" id="btnClearBroadcastLogs" style="font-size: 0.72rem; padding: 2px 8px;">
+                                        <i class="fa-solid fa-eraser"></i> Xóa log
+                                    </button>
+                                </div>
+                                <div class="terminal-window" id="broadcastTerminalLog" style="height: 180px; overflow-y: auto;">
+                                    <div class="term-line info">[Sẵn sàng]: Hệ thống gửi tin tự động thành viên nhóm đã kết nối.</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -704,6 +963,17 @@
             if (event && event.currentTarget) {
                 event.currentTarget.classList.add('active');
             }
+        }
+
+        function insertSpintaxTag(tag) {
+            const textarea = document.getElementById('broadcastCampaignText');
+            if (!textarea) return;
+            const start = textarea.selectionStart || 0;
+            const end = textarea.selectionEnd || 0;
+            const text = textarea.value;
+            textarea.value = text.substring(0, start) + tag + text.substring(end);
+            textarea.focus();
+            textarea.setSelectionRange(start + tag.length, start + tag.length);
         }
 
         // ==================== DYNAMIC ANIMATED CYBER PARTICLES (WOW EFFECT) ====================
