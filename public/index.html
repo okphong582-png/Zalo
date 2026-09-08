@@ -28,11 +28,11 @@
                 <div class="gatekeeper-logo">
                     <i class="fa-solid fa-microchip"></i>
                 </div>
-                <h2 style="font-size: 1.5rem; color: #fff; letter-spacing: -0.02em;">NEXUS BOT CLOUD</h2>
-                <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Nền Tảng Vận Hành & Cho Thuê Bot Zalo / Telegram Cao Cấp</p>
+                <h2 style="font-size: 1.45rem; color: #fff; letter-spacing: -0.02em;">NEXUS BOT CLOUD</h2>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Hệ thống Dịch Vụ Vận Hành Bot Zalo & Telegram Pro</p>
             </div>
 
-            <!-- Segmented Tabs (Hỗ trợ chuyển tab tức thời) -->
+            <!-- Segmented Tabs Chuyển đổi tức thời -->
             <div class="gatekeeper-tabs-wrapper">
                 <div class="gatekeeper-segmented-tabs">
                     <button type="button" class="gatekeeper-tab-btn active" id="tabAuthLogin" onclick="switchAuthTab('login')">
@@ -119,12 +119,12 @@
             </div>
 
             <!-- Số dư ví nạp thẻ -->
-            <div class="nav-pill pill-balance" title="Số dư tài khoản">
+            <div class="nav-pill pill-balance" title="Số dư tài khoản" onclick="switchMainTab('sectionPayment')" style="cursor: pointer;">
                 <i class="fa-solid fa-wallet text-cyan"></i> <span id="navBalance" class="font-mono">0 đ</span>
             </div>
 
             <!-- Gói cước -->
-            <div class="pill-plan free" id="navPlanBadge">
+            <div class="pill-plan free" id="navPlanBadge" onclick="switchMainTab('sectionUpgrade')" style="cursor: pointer;">
                 <i class="fa-solid fa-shield-halved"></i> GÓI FREE
             </div>
 
@@ -139,55 +139,39 @@
         </div>
     </header>
 
-    <!-- Navigation Tabs -->
+    <!-- ==================== MODULAR SUBNAV TABS ==================== -->
     <nav class="saas-subnav">
-        <button class="nav-tab-btn active" data-target="sectionBots">
-            <i class="fa-solid fa-robot"></i> Quản Lý Bot Zalo & Telegram
+        <button type="button" class="nav-tab-btn active" data-target="sectionZaloBot" onclick="switchMainTab('sectionZaloBot')">
+            <i class="fa-solid fa-comment-dots text-cyan"></i> Bot Zalo Pro
         </button>
-        <button class="nav-tab-btn" data-target="sectionPayment">
-            <i class="fa-solid fa-credit-card"></i> Nạp Thẻ Cào & Gói Pro 20k
+        <button type="button" class="nav-tab-btn" data-target="sectionTeleBot" onclick="switchMainTab('sectionTeleBot')">
+            <i class="fa-brands fa-telegram text-cyan"></i> Bot Telegram Cloud
         </button>
-        <button class="nav-tab-btn" data-target="sectionApproved">
+        <button type="button" class="nav-tab-btn" data-target="sectionUpgrade" onclick="switchMainTab('sectionUpgrade')">
+            <i class="fa-solid fa-crown text-amber"></i> Nâng Cấp Gói Pro (20k)
+        </button>
+        <button type="button" class="nav-tab-btn" data-target="sectionPayment" onclick="switchMainTab('sectionPayment')">
+            <i class="fa-solid fa-credit-card text-emerald"></i> Nạp Thẻ Cào Tự Động
+        </button>
+        <button type="button" class="nav-tab-btn" data-target="sectionApproved" onclick="switchMainTab('sectionApproved')">
             <i class="fa-solid fa-shield-check"></i> Nhóm Đã Duyệt (.duyetchat)
         </button>
     </nav>
 
     <!-- ==================== MAIN SAAS CONTENT ==================== -->
     <main class="saas-main">
-        <!-- ==================== TAB 1: BOTS MANAGEMENT ==================== -->
-        <section class="saas-section active" id="sectionBots">
+        
+        <!-- ==================== TAB 1: BOT ZALO RIÊNG BIỆT ==================== -->
+        <section class="saas-section active" id="sectionZaloBot">
             <div class="dashboard-grid">
                 
-                <!-- RUNTIME BANNER -->
-                <div class="col-12">
-                    <div class="saas-card" style="border-left: 4px solid var(--emerald-500);">
-                        <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
-                            <div style="display: flex; align-items: center; gap: 16px;">
-                                <div style="width: 48px; height: 48px; border-radius: 14px; background: rgba(16, 185, 129, 0.12); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--emerald-400); border: 1px solid rgba(16, 185, 129, 0.3);">
-                                    <i class="fa-solid fa-hourglass-half"></i>
-                                </div>
-                                <div>
-                                    <div style="font-size: 0.78rem; color: var(--text-dark); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Thời Gian Chạy Bot Còn Lại (Dùng Chung Zalo & Telegram):</div>
-                                    <div style="font-size: 1.5rem; font-weight: 800; color: #fff;" class="font-mono" id="dashTimeRemaining">50 phút 00s</div>
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 12px; align-items: center;">
-                                <span style="font-size: 0.84rem; color: var(--text-muted);">Khi hết thời gian, cả hai bot sẽ tạm dừng an toàn.</span>
-                                <button class="btn btn-cyan" onclick="document.querySelector('[data-target=\'sectionPayment\']').click()">
-                                    <i class="fa-solid fa-bolt"></i> Nâng Cấp Pro 20k (+100 Tiếng)
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CARD 1: ZALO BOT PRO -->
-                <div class="col-6">
+                <!-- Bảng điều khiển kết nối Zalo -->
+                <div class="col-7">
                     <div class="saas-card">
                         <div class="card-header">
                             <div class="card-title">
                                 <i class="fa-solid fa-comment-dots text-cyan"></i>
-                                <span>Bot Zalo Cloud Automation</span>
+                                <span>Điều Khiển & Đăng Nhập Zalo Bot</span>
                             </div>
                             <button class="btn btn-sm btn-secondary" id="btnToggleZaloBot">
                                 <i class="fa-solid fa-play"></i> Bật Bot Zalo
@@ -195,7 +179,7 @@
                         </div>
                         <div class="card-body">
                             <!-- Trạng thái -->
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; background: rgba(255, 255, 255, 0.02); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; background: rgba(255, 255, 255, 0.02); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); flex-wrap: wrap; gap: 8px;">
                                 <div style="display: flex; align-items: center;">
                                     <span class="status-indicator status-off" id="zaloBotIndicator"></span>
                                     <span style="font-size: 0.88rem; font-weight: 500;" id="zaloBotStatusText">Đang tạm dừng</span>
@@ -215,18 +199,18 @@
                                 </button>
                             </div>
 
-                            <!-- Phần Quét Mã QR -->
+                            <!-- Quét Mã QR -->
                             <div id="zaloQrSection" style="text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
                                 <img id="zaloQrImage" src="" alt="Mã QR Zalo" style="display: none; max-width: 190px; margin: 0 auto 12px; border-radius: 12px; border: 2px solid var(--emerald-500); box-shadow: 0 0 20px var(--emerald-glow);">
                                 <div id="zaloQrStatus" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-                                    Bấm tab Quét Mã QR để hiển thị mã đăng nhập.
+                                    Bấm vào để khởi tạo mã QR đăng nhập Zalo an toàn.
                                 </div>
-                                <button class="btn btn-sm btn-secondary" onclick="startZaloQrScan()">
-                                    <i class="fa-solid fa-rotate-right"></i> Làm Mới QR
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="startZaloQrScan()">
+                                    <i class="fa-solid fa-rotate-right"></i> Làm Mới Mã QR
                                 </button>
                             </div>
 
-                            <!-- Phần Nhập Cookie -->
+                            <!-- Nhập Cookie -->
                             <div id="zaloCookieSection" style="display: none;">
                                 <div class="form-group">
                                     <label class="form-label">Zalo Cookies</label>
@@ -244,42 +228,63 @@
                                     <i class="fa-solid fa-key"></i> Đăng Nhập Zalo Bằng Cookie
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
 
-                            <!-- Danh sách Lệnh Bot Zalo -->
-                            <div style="margin-top: 22px;">
-                                <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-dark); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 8px;">
-                                    Danh Sách Lệnh Zalo Hoạt Động:
+                <!-- Bảng Lệnh Zalo Hoạt Động -->
+                <div class="col-5">
+                    <div class="saas-card">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-terminal text-emerald"></i>
+                                <span>Lệnh Hoạt Động Của Bot Zalo</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+                                Sau khi thêm tài khoản Zalo vào nhóm, bot sẽ tự động phản hồi các lệnh sau:
+                            </p>
+                            <div class="command-list">
+                                <div class="command-item">
+                                    <div class="command-tag">.duyetchat</div>
+                                    <div class="command-desc">Phê duyệt nhóm/chat hiện tại để mở quyền sử dụng bot.</div>
                                 </div>
-                                <div class="command-list">
-                                    <div class="command-item">
-                                        <div class="command-tag">.duyetchat</div>
-                                        <div class="command-desc">Phê duyệt nhóm/chat hiện tại để mở khóa quyền bot hoạt động.</div>
-                                    </div>
-                                    <div class="command-item">
-                                        <div class="command-tag">.menu</div>
-                                        <div class="command-desc">Hiển thị bảng menu các lệnh (chỉ nhóm đã duyệt mới xem được).</div>
-                                    </div>
-                                    <div class="command-item">
-                                        <div class="command-tag">.soundcloud &lt;bài hát&gt;</div>
-                                        <div class="command-desc">Tìm nhạc và gửi <strong>Tin nhắn thoại (Voice Note sóng âm)</strong> cực nét.</div>
-                                    </div>
-                                    <div class="command-item">
-                                        <div class="command-tag">.info</div>
-                                        <div class="command-desc">Kiểm tra thông tin gói dịch vụ & thời gian chạy bot còn lại.</div>
-                                    </div>
+                                <div class="command-item">
+                                    <div class="command-tag">.menu</div>
+                                    <div class="command-desc">Hiển thị bảng menu các lệnh (chỉ nhóm đã duyệt mới xem được).</div>
                                 </div>
+                                <div class="command-item">
+                                    <div class="command-tag">.soundcloud &lt;bài hát&gt;</div>
+                                    <div class="command-desc">Tìm nhạc và gửi <strong>Tin nhắn thoại (Voice Note sóng âm)</strong> cực nét.</div>
+                                </div>
+                                <div class="command-item">
+                                    <div class="command-tag">.info</div>
+                                    <div class="command-desc">Kiểm tra thông tin gói dịch vụ & thời gian chạy bot còn lại.</div>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 20px; background: rgba(16, 185, 129, 0.06); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-sm); padding: 12px; font-size: 0.82rem; color: #34d399;">
+                                <i class="fa-solid fa-lightbulb"></i> <strong>Mẹo nhỏ:</strong> Bạn cũng có thể quản lý và xóa nhóm đã duyệt tại mục <strong>Nhóm Đã Duyệt</strong> trên thanh điều hướng.
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CARD 2: TELEGRAM BOT PRO -->
+            </div>
+        </section>
+
+        <!-- ==================== TAB 2: BOT TELEGRAM RIÊNG BIỆT ==================== -->
+        <section class="saas-section" id="sectionTeleBot">
+            <div class="dashboard-grid">
+                
+                <!-- Cấu hình Telegram -->
                 <div class="col-6">
                     <div class="saas-card">
                         <div class="card-header">
                             <div class="card-title">
                                 <i class="fa-brands fa-telegram text-cyan"></i>
-                                <span>Bot Telegram Cloud 24/7</span>
+                                <span>Cấu Hình & Chạy Bot Telegram</span>
                             </div>
                             <button class="btn btn-sm btn-secondary" id="btnToggleTeleBot">
                                 <i class="fa-solid fa-play"></i> Bật Bot Telegram
@@ -293,7 +298,7 @@
                                     <span style="font-size: 0.88rem; font-weight: 500;" id="teleBotStatusText">Đang dừng</span>
                                 </div>
                                 <span class="badge badge-success">
-                                    <i class="fa-solid fa-server"></i> Cloud Worker Ready
+                                    <i class="fa-solid fa-server"></i> Cloud Ready
                                 </span>
                             </div>
 
@@ -320,13 +325,13 @@
                             </div>
 
                             <!-- Phần Upload Script Bot Riêng -->
-                            <div id="teleUploadSection" style="display: none; padding: 22px; background: rgba(0, 0, 0, 0.3); border-radius: var(--radius-sm); border: 1px dashed var(--border-highlight); text-align: center;">
+                            <div id="teleUploadSection" style="display: none; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: var(--radius-sm); border: 1px dashed var(--border-highlight); text-align: center;">
                                 <input type="file" id="teleScriptFile" accept=".js" style="display: none;">
                                 <button type="button" class="btn btn-secondary" id="btnUploadTeleScript">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải Lên Script Bot (.js)
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Chọn File Mã Bot (.js)
                                 </button>
-                                <div id="teleUploadStatus" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 12px;">
-                                    Hỗ trợ tải lên mã nguồn Node.js riêng để hệ thống chạy ngầm độc lập 24/7.
+                                <div id="teleUploadStatus" style="font-size: 0.82rem; color: var(--text-muted); margin-top: 10px;">
+                                    Tải lên code bot tùy chỉnh để chạy độc lập 24/7.
                                 </div>
                             </div>
 
@@ -335,7 +340,7 @@
                                 <div style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-dark); font-weight: 700; letter-spacing: 0.05em; margin-bottom: 8px;">
                                     Lệnh Telegram Tích Hợp Sẵn:
                                 </div>
-                                <div class="command-list" style="margin-bottom: 16px;">
+                                <div class="command-list">
                                     <div class="command-item">
                                         <div class="command-tag">/start</div>
                                         <div class="command-desc">Khởi động bot, hiển thị menu và thời gian sử dụng.</div>
@@ -346,14 +351,28 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
 
-                            <!-- Terminal Logs -->
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-dark); font-weight: 700;">Terminal Logs Realtime:</span>
-                                <button class="btn btn-sm btn-secondary" id="btnClearTeleLogs" style="padding: 2px 8px; font-size: 0.72rem;">Xóa Logs</button>
+                <!-- Terminal Logs Telegram -->
+                <div class="col-6">
+                    <div class="saas-card" style="height: 100%;">
+                        <div class="card-header">
+                            <div class="card-title">
+                                <i class="fa-solid fa-square-terminal text-cyan"></i>
+                                <span>Terminal Logs Realtime</span>
                             </div>
-                            <div class="terminal-box" id="teleTerminalLogs">
-                                <div class="term-line text-muted">// Hệ thống sẵn sàng kết nối Telegram Bot.</div>
+                            <button class="btn btn-sm btn-secondary" id="btnClearTeleLogs">
+                                <i class="fa-solid fa-trash-can"></i> Xóa Logs
+                            </button>
+                        </div>
+                        <div class="card-body" style="display: flex; flex-direction: column;">
+                            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 10px;">
+                                Toàn bộ sự kiện tin nhắn đến, lệnh /start, /music sẽ được truyền realtime tại đây:
+                            </p>
+                            <div class="terminal-box" id="teleTerminalLogs" style="flex: 1; min-height: 280px;">
+                                <div class="term-line text-muted">// Hệ thống Telegram Bot Cloud đang ở chế độ chờ.</div>
                             </div>
                         </div>
                     </div>
@@ -362,17 +381,82 @@
             </div>
         </section>
 
-        <!-- ==================== TAB 2: PAYMENT & PRICING ==================== -->
+        <!-- ==================== TAB 3: NÂNG CẤP GÓI PRO RIÊNG BIỆT ==================== -->
+        <section class="saas-section" id="sectionUpgrade">
+            <div class="dashboard-grid">
+                
+                <!-- Banner Thời Gian & Trạng Thái Gói -->
+                <div class="col-12">
+                    <div class="saas-card" style="border-left: 4px solid var(--gold-500);">
+                        <div class="card-body" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-dark); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Gói Dịch Vụ Của Bạn:</div>
+                                <div style="font-size: 1.5rem; font-weight: 800; color: #fff; margin-top: 4px;">
+                                    Thời Gian Còn Lại: <span class="font-mono text-amber" id="dashTimeRemaining">50 phút 00s</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <button class="btn btn-primary" onclick="switchMainTab('sectionPayment')">
+                                    <i class="fa-solid fa-wallet"></i> Nạp Tiền Vào Ví
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng So Sánh Gói -->
+                <div class="col-12">
+                    <div class="pricing-grid">
+                        <!-- GÓI FREE -->
+                        <div class="pricing-card">
+                            <div class="plan-name">Gói Dùng Thử Free</div>
+                            <div class="plan-price">0 đ <span>/ Mặc định</span></div>
+                            <p style="font-size: 0.82rem; color: var(--text-muted);">Dành cho người dùng mới trải nghiệm chất lượng hệ thống.</p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-check"></i> <strong>50 phút</strong> sử dụng bot miễn phí</li>
+                                <li><i class="fa-solid fa-check"></i> Dùng chung cho cả Bot Zalo & Telegram</li>
+                                <li><i class="fa-solid fa-check"></i> Lệnh .menu & .duyetchat</li>
+                                <li><i class="fa-solid fa-check"></i> Gửi nhạc Voice .soundcloud</li>
+                            </ul>
+                            <button class="btn btn-secondary disabled" style="width: 100%;">
+                                <i class="fa-solid fa-check"></i> Đang Dùng Mặc Định
+                            </button>
+                        </div>
+
+                        <!-- GÓI PRO -->
+                        <div class="pricing-card popular">
+                            <div class="card-popular-pill">KHUYÊN DÙNG NHIỀU NHẤT</div>
+                            <div class="plan-name" style="color: #fbbf24;"><i class="fa-solid fa-crown"></i> Gói Pro 100 Giờ</div>
+                            <div class="plan-price" style="color: #fbbf24;">20.000 đ <span>/ 100 Tiếng</span></div>
+                            <p style="font-size: 0.82rem; color: var(--text-muted);">Vận hành bot nhóm chuyên nghiệp, ổn định 24/7 không gián đoạn.</p>
+                            <ul class="plan-features">
+                                <li><i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> <strong>100 tiếng (360.000s)</strong> thời gian chạy bot</li>
+                                <li><i class="fa-solid fa-check"></i> Chạy song song cả Zalo & Telegram</li>
+                                <li><i class="fa-solid fa-check"></i> Tải lên mã nguồn bot Node.js riêng</li>
+                                <li><i class="fa-solid fa-check"></i> Gửi Voice Note SoundCloud không giới hạn</li>
+                                <li><i class="fa-solid fa-check"></i> Băng thông Server Cloud VIP ưu tiên</li>
+                            </ul>
+                            <button type="button" class="btn btn-primary" id="btnUpgradeProCard" style="width: 100%;">
+                                <i class="fa-solid fa-bolt"></i> Nâng Cấp Ngay (20.000đ)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== TAB 4: NẠP THẺ CÀO TỰ ĐỘNG RIÊNG BIỆT ==================== -->
         <section class="saas-section" id="sectionPayment">
             <div class="dashboard-grid">
                 
-                <!-- CARD NẠP THẺ CÀO DOITHEVIP -->
+                <!-- Form Nạp Thẻ Cào -->
                 <div class="col-6">
                     <div class="saas-card">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fa-solid fa-bolt-lightning text-amber"></i>
-                                <span>Nạp Thẻ Cào Tự Động (Doithevip API)</span>
+                                <i class="fa-solid fa-credit-card text-emerald"></i>
+                                <span>Nạp Thẻ Cào Doithevip.com (Partner API)</span>
                             </div>
                             <span class="badge badge-success">
                                 <i class="fa-solid fa-lock"></i> Auto Duyệt Tức Thì
@@ -393,8 +477,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">Chọn Mệnh Giá Thẻ Cào</label>
-                                    <!-- Chips chọn nhanh mệnh giá -->
+                                    <label class="form-label">Chọn Mệnh Giá Thẻ</label>
                                     <div class="chips-grid">
                                         <div class="chip-btn" onclick="selectAmountChip(10000)">10.000 đ</div>
                                         <div class="chip-btn active" onclick="selectAmountChip(20000)">20.000 đ (Gói Pro)</div>
@@ -417,87 +500,42 @@
                                 </div>
 
                                 <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.25); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 18px; font-size: 0.82rem; color: #fbbf24;">
-                                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Lưu ý quan trọng:</strong> Vui lòng chọn đúng mệnh giá thẻ. Khi thẻ được duyệt thành công, tiền sẽ tự động cộng ngay vào tài khoản của bạn.
+                                    <i class="fa-solid fa-triangle-exclamation"></i> <strong>Lưu ý:</strong> Vui lòng chọn đúng mệnh giá thẻ. Tiền sẽ tự động cộng ngay vào ví của bạn khi thẻ được duyệt thành công.
                                 </div>
 
                                 <button type="submit" class="btn btn-primary" id="btnSubmitCharging" style="width: 100%;">
                                     <i class="fa-solid fa-credit-card"></i> Nạp Thẻ Cào Ngay
                                 </button>
                             </form>
-
-                            <!-- Lịch sử nạp thẻ -->
-                            <div style="margin-top: 26px;">
-                                <div style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--text-dark); margin-bottom: 12px; letter-spacing: 0.04em;">
-                                    Lịch Sử Nạp Thẻ Gần Đây:
-                                </div>
-                                <div style="overflow-x: auto;">
-                                    <table class="saas-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Thời Gian</th>
-                                                <th>Nhà Mạng</th>
-                                                <th>Mệnh Giá</th>
-                                                <th>Seri</th>
-                                                <th>Trạng Thái</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="cardHistoryTableBody">
-                                            <tr><td colspan="5" class="text-muted text-center py-3">Chưa có giao dịch nạp thẻ nào.</td></tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- CARD BẢNG GIÁ DỊCH VỤ & GÓI PRO -->
+                <!-- Bảng Lịch Sử Nạp Thẻ -->
                 <div class="col-6">
-                    <div class="saas-card">
+                    <div class="saas-card" style="height: 100%;">
                         <div class="card-header">
                             <div class="card-title">
-                                <i class="fa-solid fa-gem text-amber"></i>
-                                <span>Bảng Giá Gói Dịch Vụ Bot Cloud</span>
+                                <i class="fa-solid fa-clock-rotate-left text-cyan"></i>
+                                <span>Lịch Sử Giao Dịch Nạp Thẻ</span>
                             </div>
-                            <span class="badge badge-warning">
-                                <i class="fa-solid fa-crown"></i> Ưu Đãi VIP
-                            </span>
                         </div>
                         <div class="card-body">
-                            <div class="pricing-grid">
-                                <!-- GÓI FREE -->
-                                <div class="pricing-card">
-                                    <div class="plan-name">Gói Dùng Thử Free</div>
-                                    <div class="plan-price">0 đ <span>/ Mặc định</span></div>
-                                    <p style="font-size: 0.82rem; color: var(--text-muted);">Trải nghiệm sức mạnh và tốc độ của hệ thống Bot Cloud.</p>
-                                    <ul class="plan-features">
-                                        <li><i class="fa-solid fa-check"></i> 50 phút sử dụng bot miễn phí</li>
-                                        <li><i class="fa-solid fa-check"></i> Dùng chung cho cả Zalo & Telegram</li>
-                                        <li><i class="fa-solid fa-check"></i> Lệnh .menu & .duyetchat</li>
-                                        <li><i class="fa-solid fa-check"></i> Tìm nhạc Voice .soundcloud</li>
-                                    </ul>
-                                    <button class="btn btn-secondary disabled" style="width: 100%;">
-                                        <i class="fa-solid fa-check"></i> Đang Dùng Mặc Định
-                                    </button>
-                                </div>
-
-                                <!-- GÓI PRO -->
-                                <div class="pricing-card popular">
-                                    <div class="card-popular-pill">KHUYÊN DÙNG NHIỀU NHẤT</div>
-                                    <div class="plan-name" style="color: #fbbf24;"><i class="fa-solid fa-crown"></i> Gói Pro 100 Giờ</div>
-                                    <div class="plan-price" style="color: #fbbf24;">20.000 đ <span>/ 100 Tiếng</span></div>
-                                    <p style="font-size: 0.82rem; color: var(--text-muted);">Vận hành bot nhóm chuyên nghiệp, ổn định 24/7 không gián đoạn.</p>
-                                    <ul class="plan-features">
-                                        <li><i class="fa-solid fa-bolt" style="color: #fbbf24;"></i> <strong>100 tiếng (360.000s)</strong> chạy bot 24/7</li>
-                                        <li><i class="fa-solid fa-check"></i> Chạy song song Zalo & Telegram</li>
-                                        <li><i class="fa-solid fa-check"></i> Tải lên mã nguồn bot Node.js riêng</li>
-                                        <li><i class="fa-solid fa-check"></i> Gửi Voice Note SoundCloud không giới hạn</li>
-                                        <li><i class="fa-solid fa-check"></i> Băng thông Server Cloud VIP ưu tiên</li>
-                                    </ul>
-                                    <button class="btn btn-primary" id="btnUpgradeProCard" style="width: 100%;">
-                                        <i class="fa-solid fa-bolt"></i> Nâng Cấp Ngay (20.000đ)
-                                    </button>
-                                </div>
+                            <div style="overflow-x: auto;">
+                                <table class="saas-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Thời Gian</th>
+                                            <th>Nhà Mạng</th>
+                                            <th>Mệnh Giá</th>
+                                            <th>Seri</th>
+                                            <th>Trạng Thái</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cardHistoryTableBody">
+                                        <tr><td colspan="5" class="text-muted text-center py-3">Chưa có giao dịch nạp thẻ nào.</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -506,7 +544,7 @@
             </div>
         </section>
 
-        <!-- ==================== TAB 3: APPROVED CHATS ==================== -->
+        <!-- ==================== TAB 5: NHÓM ĐÃ DUYỆT RIÊNG BIỆT ==================== -->
         <section class="saas-section" id="sectionApproved">
             <div class="dashboard-grid">
                 <div class="col-12">
@@ -533,7 +571,7 @@
                                 <div style="flex: 1; min-width: 220px;">
                                     <input type="text" class="form-control" id="inputApproveThreadName" placeholder="Tên gợi nhớ (VD: Nhóm Học Tập, Nhóm Bạn Bè...)">
                                 </div>
-                                <button class="btn btn-primary" id="btnAddApprovedChat">
+                                <button type="button" class="btn btn-primary" id="btnAddApprovedChat">
                                     <i class="fa-solid fa-plus"></i> Duyệt Nhóm Này
                                 </button>
                             </div>
@@ -559,6 +597,7 @@
                 </div>
             </div>
         </section>
+
     </main>
 
     <!-- Toast Container -->
@@ -569,8 +608,22 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
-    <!-- Inline UI Helpers (Đảm bảo chuyển tab và chọn chip hoạt động tức thời 100%) -->
+    <!-- Inline UI Helpers (Chuyển tab và chip chọn hoạt động tức thì 100%) -->
     <script>
+        function switchMainTab(targetId) {
+            const navButtons = document.querySelectorAll('.nav-tab-btn');
+            const sections = document.querySelectorAll('.saas-section');
+            navButtons.forEach(b => {
+                if (b.getAttribute('data-target') === targetId) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+            sections.forEach(s => {
+                if (s.id === targetId) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         function switchAuthTab(mode) {
             const tabL = document.getElementById('tabAuthLogin');
             const tabR = document.getElementById('tabAuthRegister');

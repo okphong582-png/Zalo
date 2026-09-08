@@ -1,7 +1,6 @@
 /* ==========================================================================
    NEXUS BOT CLOUD - ULTRA LUXURY SAAS DESIGN SYSTEM
-   Cyber Obsidian, Titanium, Emerald (#10b981) & Gold (#f59e0b)
-   Inspired by Linear.app, Stripe Dark & Vercel
+   Mobile & Desktop Optimized | Modular Clean Layout
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
@@ -10,8 +9,8 @@
     --bg-base: #030712;
     --bg-surface: #070d1c;
     --bg-elevated: #0d1629;
-    --bg-card: rgba(10, 17, 34, 0.78);
-    --bg-glass: rgba(5, 10, 22, 0.88);
+    --bg-card: rgba(10, 17, 34, 0.82);
+    --bg-glass: rgba(5, 10, 22, 0.92);
 
     --border-subtle: rgba(255, 255, 255, 0.08);
     --border-highlight: rgba(255, 255, 255, 0.16);
@@ -24,7 +23,6 @@
 
     --emerald-400: #34d399;
     --emerald-500: #10b981;
-    --emerald-600: #059669;
     --emerald-glow: rgba(16, 185, 129, 0.3);
 
     --cyan-400: #22d3ee;
@@ -42,9 +40,9 @@
     --radius-lg: 18px;
     --radius-xl: 24px;
 
-    --shadow-card: 0 20px 45px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --shadow-card: 0 16px 36px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     --shadow-glow: 0 0 30px rgba(16, 185, 129, 0.16);
-    --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -76,8 +74,8 @@ body.gatekeeper-locked {
     width: 100vw;
     height: 100vh;
     background: 
-        radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 90% 15%, rgba(6, 182, 212, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.07) 0%, transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(6, 182, 212, 0.06) 0%, transparent 45%),
         radial-gradient(circle at 50% 90%, rgba(15, 23, 42, 0.95) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
@@ -92,12 +90,11 @@ body.gatekeeper-locked {
     background-image: 
         linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-size: 36px 36px;
     pointer-events: none;
     z-index: 0;
 }
 
-/* Typography */
 h1, h2, h3, h4, .brand-text {
     font-family: 'Outfit', sans-serif;
     letter-spacing: -0.025em;
@@ -108,7 +105,7 @@ code, .font-mono {
     font-family: 'JetBrains Mono', monospace;
 }
 
-/* ==================== HIGH-END NAVIGATION BAR ==================== */
+/* ==================== TOP NAVIGATION BAR ==================== */
 .saas-navbar {
     position: sticky;
     top: 0;
@@ -117,34 +114,36 @@ code, .font-mono {
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
     border-bottom: 1px solid var(--border-subtle);
-    padding: 14px 32px;
+    padding: 12px 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
 }
 
 .brand-wrap {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
 .brand-emblem {
-    width: 42px;
-    height: 42px;
+    width: 38px;
+    height: 38px;
     border-radius: var(--radius-md);
     background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 18px;
     color: #fff;
-    box-shadow: 0 0 20px var(--emerald-glow);
+    box-shadow: 0 0 16px var(--emerald-glow);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .brand-text {
-    font-size: 1.25rem;
+    font-size: 1.18rem;
     color: #fff;
     line-height: 1.15;
 }
@@ -156,38 +155,40 @@ code, .font-mono {
 }
 
 .brand-tag {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 600;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     color: var(--text-dark);
     text-transform: uppercase;
 }
 
-/* Nav Actions Widgets */
 .nav-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
 }
 
 .nav-pill {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     background: var(--bg-elevated);
     border: 1px solid var(--border-subtle);
-    padding: 7px 16px;
+    padding: 6px 14px;
     border-radius: 40px;
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     font-weight: 500;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    white-space: nowrap;
 }
 
 .pill-timer {
     color: var(--emerald-400);
     border-color: rgba(16, 185, 129, 0.3);
     background: rgba(16, 185, 129, 0.06);
-    box-shadow: 0 0 16px rgba(16, 185, 129, 0.12);
+    box-shadow: 0 0 14px rgba(16, 185, 129, 0.12);
 }
 
 .pill-timer.expired {
@@ -204,13 +205,14 @@ code, .font-mono {
 .pill-plan {
     padding: 5px 12px;
     border-radius: 30px;
-    font-size: 0.76rem;
+    font-size: 0.74rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    white-space: nowrap;
 }
 
 .pill-plan.free {
@@ -223,7 +225,7 @@ code, .font-mono {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.25));
     color: #fcd34d;
     border: 1px solid rgba(245, 158, 11, 0.5);
-    box-shadow: 0 0 18px rgba(245, 158, 11, 0.25);
+    box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
 }
 
 .user-badge {
@@ -237,40 +239,48 @@ code, .font-mono {
 }
 
 .user-avatar {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: linear-gradient(135deg, #334155, #475569);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 10px;
     color: #fff;
 }
 
-/* Sub-nav Navigation Tabs */
+/* ==================== MODULAR SUBNAV TABS ==================== */
 .saas-subnav {
     display: flex;
-    gap: 8px;
-    padding: 12px 32px;
-    background: rgba(7, 13, 28, 0.6);
+    gap: 6px;
+    padding: 10px 28px;
+    background: rgba(7, 13, 28, 0.7);
     border-bottom: 1px solid var(--border-subtle);
     overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+}
+
+.saas-subnav::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
 }
 
 .nav-tab-btn {
     background: transparent;
     border: 1px solid transparent;
     color: var(--text-muted);
-    padding: 9px 20px;
+    padding: 8px 18px;
     border-radius: var(--radius-sm);
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     font-weight: 500;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     transition: var(--transition);
+    flex-shrink: 0;
 }
 
 .nav-tab-btn:hover {
@@ -289,9 +299,9 @@ code, .font-mono {
 .saas-main {
     position: relative;
     z-index: 1;
-    max-width: 1400px;
+    max-width: 1360px;
     margin: 0 auto;
-    padding: 28px 32px;
+    padding: 24px 28px;
 }
 
 .saas-section {
@@ -300,30 +310,26 @@ code, .font-mono {
 
 .saas-section.active {
     display: block;
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeIn 0.25s ease-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 24px;
+    gap: 20px;
 }
 
 .col-12 { grid-column: span 12; }
 .col-8 { grid-column: span 8; }
+.col-7 { grid-column: span 7; }
 .col-6 { grid-column: span 6; }
+.col-5 { grid-column: span 5; }
 .col-4 { grid-column: span 4; }
-
-@media (max-width: 1100px) {
-    .col-8, .col-6, .col-4 { grid-column: span 12; }
-    .saas-navbar { padding: 12px 18px; }
-    .saas-main { padding: 20px 16px; }
-}
 
 /* ==================== LUXURY CARDS ==================== */
 .saas-card {
@@ -344,15 +350,17 @@ code, .font-mono {
 }
 
 .card-header {
-    padding: 20px 24px;
+    padding: 18px 22px;
     border-bottom: 1px solid var(--border-subtle);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .card-title {
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: #fff;
     display: flex;
@@ -361,7 +369,7 @@ code, .font-mono {
 }
 
 .card-body {
-    padding: 24px;
+    padding: 22px;
     flex: 1;
 }
 
@@ -371,8 +379,8 @@ code, .font-mono {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 10px 22px;
-    font-size: 0.88rem;
+    padding: 10px 20px;
+    font-size: 0.86rem;
     font-weight: 600;
     font-family: inherit;
     border-radius: var(--radius-sm);
@@ -387,19 +395,19 @@ code, .font-mono {
     background: linear-gradient(135deg, #059669 0%, #10b981 50%, #06b6d4 100%);
     color: #fff;
     border-color: rgba(255, 255, 255, 0.2);
-    box-shadow: 0 4px 18px var(--emerald-glow);
+    box-shadow: 0 4px 16px var(--emerald-glow);
 }
 
 .btn-primary:hover {
     background: linear-gradient(135deg, #047857 0%, #059669 50%, #0891b2 100%);
-    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.45);
+    box-shadow: 0 6px 22px rgba(16, 185, 129, 0.4);
     transform: translateY(-1px);
 }
 
 .btn-cyan {
     background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
     color: #fff;
-    box-shadow: 0 4px 16px var(--cyan-glow);
+    box-shadow: 0 4px 14px var(--cyan-glow);
 }
 
 .btn-cyan:hover {
@@ -419,8 +427,8 @@ code, .font-mono {
 }
 
 .btn-sm {
-    padding: 7px 14px;
-    font-size: 0.8rem;
+    padding: 6px 14px;
+    font-size: 0.78rem;
 }
 
 .btn-active {
@@ -431,15 +439,15 @@ code, .font-mono {
 
 /* ==================== FORM CONTROLS ==================== */
 .form-group {
-    margin-bottom: 18px;
+    margin-bottom: 16px;
 }
 
 .form-label {
     display: block;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 600;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
@@ -454,13 +462,13 @@ code, .font-mono {
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-dark);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     pointer-events: none;
     transition: var(--transition);
 }
 
 .input-icon-wrap .form-control {
-    padding-left: 42px;
+    padding-left: 40px;
 }
 
 .input-icon-wrap:focus-within i {
@@ -472,9 +480,9 @@ code, .font-mono {
     background: rgba(5, 10, 22, 0.75);
     border: 1px solid var(--border-subtle);
     color: #fff;
-    padding: 12px 16px;
+    padding: 11px 14px;
     border-radius: var(--radius-sm);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     font-family: inherit;
     transition: var(--transition);
 }
@@ -498,13 +506,14 @@ code, .font-mono {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 10px;
+    padding: 10px 8px;
     text-align: center;
     color: var(--text-muted);
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
     transition: var(--transition);
+    user-select: none;
 }
 
 .chip-btn:hover {
@@ -531,7 +540,7 @@ code, .font-mono {
 
 .pulse-green {
     background-color: var(--emerald-400);
-    box-shadow: 0 0 12px var(--emerald-400);
+    box-shadow: 0 0 10px var(--emerald-400);
     animation: pulseDot 1.8s infinite;
 }
 
@@ -554,7 +563,7 @@ code, .font-mono {
 .badge {
     padding: 4px 10px;
     border-radius: 6px;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     font-weight: 600;
     display: inline-flex;
     align-items: center;
@@ -583,34 +592,34 @@ code, .font-mono {
 .command-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-top: 14px;
+    gap: 8px;
+    margin-top: 12px;
 }
 
 .command-item {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 11px 16px;
+    padding: 10px 14px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .command-tag {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
     color: var(--cyan-400);
     background: rgba(6, 182, 212, 0.1);
     border: 1px solid rgba(6, 182, 212, 0.3);
-    padding: 3px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
     white-space: nowrap;
 }
 
 .command-desc {
-    font-size: 0.84rem;
+    font-size: 0.82rem;
     color: var(--text-muted);
 }
 
@@ -619,14 +628,14 @@ code, .font-mono {
     background: #02050e;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 14px;
+    padding: 12px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    height: 190px;
+    font-size: 0.78rem;
+    height: 180px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
     box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
@@ -682,38 +691,38 @@ code, .font-mono {
 }
 
 .plan-name {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #fff;
 }
 
 .plan-price {
-    font-size: 2.3rem;
+    font-size: 2.2rem;
     font-weight: 800;
     font-family: 'Outfit', sans-serif;
     color: #fff;
-    margin: 14px 0;
+    margin: 12px 0;
 }
 
 .plan-price span {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-dark);
     font-weight: 400;
 }
 
 .plan-features {
     list-style: none;
-    margin: 20px 0;
+    margin: 18px 0;
     flex: 1;
 }
 
 .plan-features li {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: var(--text-muted);
-    padding: 10px 0;
+    padding: 9px 0;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
@@ -725,13 +734,13 @@ code, .font-mono {
 .saas-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.86rem;
+    font-size: 0.85rem;
 }
 
 .saas-table th {
     text-align: left;
-    padding: 12px 16px;
-    font-size: 0.75rem;
+    padding: 10px 14px;
+    font-size: 0.74rem;
     color: var(--text-dark);
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -740,7 +749,7 @@ code, .font-mono {
 }
 
 .saas-table td {
-    padding: 14px 16px;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--border-subtle);
     color: var(--text-muted);
 }
@@ -763,7 +772,7 @@ code, .font-mono {
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 20px;
 }
 
 .gatekeeper-overlay.active {
@@ -775,7 +784,7 @@ code, .font-mono {
     border: 1px solid var(--border-highlight);
     border-radius: var(--radius-xl);
     width: 100%;
-    max-width: 460px;
+    max-width: 440px;
     box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 50px rgba(16, 185, 129, 0.15);
     overflow: hidden;
     animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -787,29 +796,29 @@ code, .font-mono {
 }
 
 .gatekeeper-header {
-    padding: 32px 28px 24px;
+    padding: 28px 24px 20px;
     text-align: center;
     border-bottom: 1px solid var(--border-subtle);
     background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, transparent 100%);
 }
 
 .gatekeeper-logo {
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
     background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-size: 26px;
+    font-size: 24px;
     color: #fff;
-    margin-bottom: 16px;
-    box-shadow: 0 0 25px var(--emerald-glow);
+    margin-bottom: 12px;
+    box-shadow: 0 0 20px var(--emerald-glow);
     border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .gatekeeper-tabs-wrapper {
-    padding: 16px 28px 0;
+    padding: 14px 24px 0;
 }
 
 .gatekeeper-segmented-tabs {
@@ -826,7 +835,7 @@ code, .font-mono {
     background: transparent;
     border: none;
     padding: 10px;
-    font-size: 0.88rem;
+    font-size: 0.86rem;
     font-weight: 600;
     color: var(--text-dark);
     cursor: pointer;
@@ -843,18 +852,18 @@ code, .font-mono {
 }
 
 .gatekeeper-body {
-    padding: 28px;
+    padding: 24px;
 }
 
 /* ==================== TOAST NOTIFICATIONS ==================== */
 .toast-container {
     position: fixed;
-    bottom: 28px;
-    right: 28px;
+    bottom: 24px;
+    right: 24px;
     z-index: 100000;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     pointer-events: none;
 }
 
@@ -864,12 +873,12 @@ code, .font-mono {
     border: 1px solid var(--border-highlight);
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
     border-radius: var(--radius-md);
-    padding: 14px 20px;
+    padding: 12px 18px;
     display: flex;
     align-items: center;
-    gap: 14px;
-    min-width: 320px;
-    max-width: 440px;
+    gap: 12px;
+    min-width: 300px;
+    max-width: 420px;
     animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     transition: opacity 0.3s, transform 0.3s;
 }
@@ -880,12 +889,12 @@ code, .font-mono {
 }
 
 @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(40px); }
+    from { opacity: 0; transform: translateX(30px); }
     to { opacity: 1; transform: translateX(0); }
 }
 
 .toast-msg {
-    font-size: 0.88rem;
+    font-size: 0.85rem;
     color: #f8fafc;
 }
 
@@ -897,3 +906,46 @@ code, .font-mono {
 .text-muted { color: var(--text-muted); }
 .text-center { text-align: center; }
 .py-3 { padding-top: 1rem; padding-bottom: 1rem; }
+
+/* ==================== MOBILE & RESPONSIVE TWEAKS ==================== */
+@media (max-width: 900px) {
+    .col-12, .col-8, .col-7, .col-6, .col-5, .col-4 {
+        grid-column: span 12;
+    }
+    .saas-navbar {
+        padding: 10px 16px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    .brand-wrap {
+        justify-content: space-between;
+    }
+    .nav-actions {
+        justify-content: space-between;
+        width: 100%;
+        gap: 6px;
+    }
+    .nav-pill {
+        padding: 5px 10px;
+        font-size: 0.76rem;
+    }
+    .saas-subnav {
+        padding: 8px 16px;
+    }
+    .saas-main {
+        padding: 16px;
+    }
+    .chips-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    .card-header {
+        padding: 14px 16px;
+    }
+    .card-body {
+        padding: 16px;
+    }
+}

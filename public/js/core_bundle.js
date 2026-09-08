@@ -955,8 +955,10 @@ function initPaymentSystem() {
         const currentBal = saasState.balance || 0;
         if (currentBal < 20000) {
             showToast(`Số dư ví không đủ 20.000đ (Hiện có: ${currentBal.toLocaleString()}đ). Vui lòng nạp thẻ cào để tiếp tục!`, 'warning');
-            // Cuộn đến bảng nạp thẻ
-            document.getElementById('sectionPayment')?.scrollIntoView({ behavior: 'smooth' });
+            // Tự động chuyển sang Tab Nạp Thẻ Cào
+            if (typeof switchMainTab === 'function') {
+                switchMainTab('sectionPayment');
+            }
             return;
         }
 
