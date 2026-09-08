@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEXUS BOT CLOUD | Nền Tảng Chạy Bot Zalo & Telegram Pro 24/7</title>
+    <title>ICEBEAR PRO | Nền Tảng Chạy Bot Zalo & Telegram 24/7</title>
     <meta name="description" content="Nền tảng Cloud SaaS chuyên nghiệp vận hành Bot Zalo và Telegram tự động thông minh 24/7. Hỗ trợ gửi Voice Note SoundCloud, duyệt chat an toàn và nạp thẻ tự động.">
     
     <!-- Google Fonts -->
@@ -18,7 +18,14 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="gatekeeper-locked">
-    <div class="bg-mesh"></div>
+    <!-- Dynamic Animated Aurora & Cyber Constellation Background -->
+    <div class="aurora-container">
+        <div class="aurora-orb aurora-orb-1"></div>
+        <div class="aurora-orb aurora-orb-2"></div>
+        <div class="aurora-orb aurora-orb-3"></div>
+        <div class="aurora-orb aurora-orb-4"></div>
+    </div>
+    <canvas id="cyberCanvas"></canvas>
     <div class="bg-grid-overlay"></div>
 
     <!-- ==================== GATEKEEPER CYBER AUTH MODAL ==================== -->
@@ -28,7 +35,7 @@
                 <div class="gatekeeper-logo">
                     <i class="fa-solid fa-microchip"></i>
                 </div>
-                <h2 style="font-size: 1.45rem; color: #fff; letter-spacing: -0.02em;">NEXUS BOT CLOUD</h2>
+                <h2 style="font-size: 1.45rem; color: #fff; letter-spacing: -0.02em;">ICEBEAR BOT CLOUD</h2>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">Hệ thống Dịch Vụ Vận Hành Bot Zalo & Telegram Pro</p>
             </div>
 
@@ -107,7 +114,7 @@
                 <i class="fa-solid fa-bolt"></i>
             </div>
             <div>
-                <div class="brand-text">NEXUS <span>PRO</span></div>
+                <div class="brand-text">ICEBEAR <span>PRO</span></div>
                 <div class="brand-tag">BOT CLOUD SAAS</div>
             </div>
         </div>
@@ -698,6 +705,106 @@
                 event.currentTarget.classList.add('active');
             }
         }
+
+        // ==================== DYNAMIC ANIMATED CYBER PARTICLES (WOW EFFECT) ====================
+        (function() {
+            const canvas = document.getElementById('cyberCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const particleCount = Math.min(Math.floor(window.innerWidth / 18), 70);
+            const particles = [];
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.45,
+                    vy: (Math.random() - 0.5) * 0.45,
+                    radius: Math.random() * 2 + 1,
+                    isCyan: Math.random() > 0.4
+                });
+            }
+
+            let mouse = { x: -1000, y: -1000 };
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            window.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            function render() {
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    else if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    else if (p.y > height) p.y = 0;
+
+                    // Particle glow dot
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.isCyan ? 'rgba(6, 182, 212, 0.85)' : 'rgba(16, 185, 129, 0.85)';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = p.isCyan ? '#06b6d4' : '#10b981';
+                    ctx.fill();
+
+                    // Connecting lines between nearby particles
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 130) {
+                            const alpha = (1 - dist / 130) * 0.22;
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(16, 185, 129, ${alpha})`;
+                            ctx.lineWidth = 0.9;
+                            ctx.shadowBlur = 0;
+                            ctx.stroke();
+                        }
+                    }
+
+                    // Interactive mouse proximity line
+                    const mdx = p.x - mouse.x;
+                    const mdy = p.y - mouse.y;
+                    const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+                    if (mdist < 150) {
+                        const mAlpha = (1 - mdist / 150) * 0.45;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(mouse.x, mouse.y);
+                        ctx.strokeStyle = `rgba(6, 182, 212, ${mAlpha})`;
+                        ctx.lineWidth = 1.2;
+                        ctx.shadowBlur = 4;
+                        ctx.shadowColor = '#06b6d4';
+                        ctx.stroke();
+                    }
+                }
+
+                requestAnimationFrame(render);
+            }
+            render();
+        })();
     </script>
 
     <!-- Dynamic In-Memory Secure Core Loader (Ẩn hoàn toàn file app.js khỏi F12 Sources) -->
