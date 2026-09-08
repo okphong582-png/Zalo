@@ -669,43 +669,130 @@ window.removeApprovedChat = async function(threadId) {
     }
 };
 
+let qrAutoRefreshTimeout = null;
+let qrCountdownInterval = null;
+let qrSecondsLeft = 60;
+
 function startZaloQrScan() {
     if (saasState.qrEventSource) {
         saasState.qrEventSource.close();
+        saasState.qrEventSource = null;
+    }
+    if (qrAutoRefreshTimeout) {
+        clearTimeout(qrAutoRefreshTimeout);
+        qrAutoRefreshTimeout = null;
+    }
+    if (qrCountdownInterval) {
+        clearInterval(qrCountdownInterval);
+        qrCountdownInterval = null;
     }
 
     const qrImg = document.getElementById('zaloQrImage');
     const qrStatus = document.getElementById('zaloQrStatus');
-    if (qrStatus) qrStatus.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang khởi tạo mã QR...';
+    const btnGen = document.getElementById('btnGenZaloQr');
+    const btnRefresh = document.getElementById('btnRefreshZaloQr');
+    const countdownWrap = document.getElementById('qrCountdownWrap');
+    const timerEl = document.getElementById('qrTimer');
+
+    if (btnGen) {
+        btnGen.disabled = true;
+        btnGen.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tạo mã QR...';
+    }
+    if (qrStatus) {
+        qrStatus.innerHTML = '<span class="text-cyan"><i class="fa-solid fa-spinner fa-spin"></i> Đang kết nối máy chủ Zalo tạo mã QR...</span>';
+    }
 
     saasState.qrEventSource = new EventSource('/api/auth/login-qr');
 
     saasState.qrEventSource.addEventListener('qr_code', (e) => {
         const data = JSON.parse(e.data);
-        if (qrImg && data.url) {
-            qrImg.src = data.url;
+        const imgSrc = data.image || data.url || (data.code ? `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(data.code)}` : '');
+        if (qrImg && imgSrc) {
+            qrImg.src = imgSrc;
             qrImg.style.display = 'block';
         }
-        if (qrStatus) qrStatus.innerHTML = '<i class="fa-solid fa-qrcode"></i> Hãy mở Zalo trên điện thoại và quét mã QR này.';
+        if (qrStatus) {
+            qrStatus.innerHTML = '<span class="text-green"><i class="fa-solid fa-qrcode"></i> Mã QR sẵn sàng! Mở ứng dụng Zalo trên điện thoại để quét.</span>';
+        }
+        if (btnGen) {
+            btnGen.disabled = false;
+            btnGen.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Tạo Lại Mã QR';
+        }
+        if (btnRefresh) {
+            btnRefresh.style.display = 'inline-flex';
+        }
+
+        // Đếm ngược 60 giây phiên QR
+        qrSecondsLeft = 60;
+        if (countdownWrap) countdownWrap.style.display = 'block';
+        if (timerEl) timerEl.textContent = qrSecondsLeft;
+
+        if (qrCountdownInterval) clearInterval(qrCountdownInterval);
+        qrCountdownInterval = setInterval(() => {
+            qrSecondsLeft--;
+            if (timerEl) timerEl.textContent = qrSecondsLeft;
+            if (qrSecondsLeft <= 0) {
+                clearInterval(qrCountdownInterval);
+            }
+        }, 1000);
     });
 
     saasState.qrEventSource.addEventListener('qr_scanned', (e) => {
-        if (qrStatus) qrStatus.innerHTML = '<i class="fa-solid fa-mobile-screen-button text-green"></i> Đã quét mã QR! Vui lòng nhấn <strong>Xác nhận</strong> trên Zalo điện thoại.';
+        if (qrCountdownInterval) clearInterval(qrCountdownInterval);
+        if (qrStatus) {
+            qrStatus.innerHTML = '<span class="text-green"><i class="fa-solid fa-mobile-screen-button"></i> Đã quét thành công! Hãy nhấn <strong>Xác nhận</strong> trên điện thoại.</span>';
+        }
+    });
+
+    // Khi phiên hết hạn -> TỰ ĐỘNG TẠO MÃ QR MỚI
+    const handleExpired = () => {
+        if (qrCountdownInterval) clearInterval(qrCountdownInterval);
+        if (qrStatus) {
+            qrStatus.innerHTML = '<span class="text-amber"><i class="fa-solid fa-rotate fa-spin"></i> Phiên QR đã hết hạn. Đang tự động tạo mã QR mới...</span>';
+        }
+        if (saasState.qrEventSource) {
+            saasState.qrEventSource.close();
+            saasState.qrEventSource = null;
+        }
+        qrAutoRefreshTimeout = setTimeout(() => {
+            startZaloQrScan();
+        }, 1500);
+    };
+
+    saasState.qrEventSource.addEventListener('qr_expired', handleExpired);
+    saasState.qrEventSource.addEventListener('qr_declined', () => {
+        if (qrStatus) qrStatus.innerHTML = '<span class="text-red"><i class="fa-solid fa-ban"></i> Đăng nhập bị từ chối trên thiết bị. Bấm tạo lại mã nếu muốn thử lại.</span>';
+        if (saasState.qrEventSource) {
+            saasState.qrEventSource.close();
+            saasState.qrEventSource = null;
+        }
+        if (btnGen) {
+            btnGen.disabled = false;
+            btnGen.innerHTML = '<i class="fa-solid fa-qrcode"></i> Tạo Lại Mã QR';
+        }
     });
 
     saasState.qrEventSource.addEventListener('success', (e) => {
+        if (qrCountdownInterval) clearInterval(qrCountdownInterval);
         const data = JSON.parse(e.data);
         showToast(`Đăng nhập Zalo thành công: ${data.user?.name || 'Tài khoản Zalo'}`, 'success');
-        if (qrStatus) qrStatus.innerHTML = '<i class="fa-solid fa-circle-check text-green"></i> Đăng nhập thành công!';
-        saasState.qrEventSource.close();
+        if (qrStatus) {
+            qrStatus.innerHTML = '<span class="text-green"><i class="fa-solid fa-circle-check"></i> Đăng nhập thành công! Bot Zalo đã sẵn sàng.</span>';
+        }
+        if (countdownWrap) countdownWrap.style.display = 'none';
+        if (saasState.qrEventSource) {
+            saasState.qrEventSource.close();
+            saasState.qrEventSource = null;
+        }
         checkZaloAuthStatus();
     });
 
     saasState.qrEventSource.addEventListener('error', (e) => {
-        if (qrStatus) qrStatus.innerHTML = '<i class="fa-solid fa-circle-xmark text-red"></i> Mã QR đã hết hạn. Vui lòng bấm làm mới.';
-        saasState.qrEventSource.close();
+        handleExpired();
     });
 }
+
+window.startZaloQrScan = startZaloQrScan;
 
 // ==================== BOT TELEGRAM PRO LOGIC ====================
 function initTeleBotControls() {

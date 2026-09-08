@@ -200,14 +200,24 @@
                             </div>
 
                             <!-- Quét Mã QR -->
-                            <div id="zaloQrSection" style="text-align: center; padding: 20px; background: rgba(0, 0, 0, 0.3); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
-                                <img id="zaloQrImage" src="" alt="Mã QR Zalo" style="display: none; max-width: 190px; margin: 0 auto 12px; border-radius: 12px; border: 2px solid var(--emerald-500); box-shadow: 0 0 20px var(--emerald-glow);">
-                                <div id="zaloQrStatus" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-                                    Bấm vào để khởi tạo mã QR đăng nhập Zalo an toàn.
+                            <div id="zaloQrSection" style="text-align: center; padding: 22px; background: rgba(0, 0, 0, 0.35); border-radius: var(--radius-sm); border: 1px solid var(--border-subtle);">
+                                <div id="qrCountdownWrap" style="display: none; margin-bottom: 12px;">
+                                    <span class="badge badge-warning" id="qrCountdownBadge">
+                                        <i class="fa-solid fa-clock"></i> Tự động tạo mã mới sau: <strong id="qrTimer" class="font-mono">60</strong>s
+                                    </span>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-secondary" onclick="startZaloQrScan()">
-                                    <i class="fa-solid fa-rotate-right"></i> Làm Mới Mã QR
-                                </button>
+                                <img id="zaloQrImage" src="" alt="Mã QR Zalo" style="display: none; max-width: 200px; margin: 0 auto 14px; border-radius: 14px; border: 2px solid var(--emerald-500); box-shadow: 0 0 25px var(--emerald-glow);">
+                                <div id="zaloQrStatus" style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 14px;">
+                                    Chưa tạo mã QR. Hãy bấm nút bên dưới để tạo mã quét đăng nhập Zalo.
+                                </div>
+                                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                    <button type="button" class="btn btn-primary" id="btnGenZaloQr" onclick="startZaloQrScan()">
+                                        <i class="fa-solid fa-qrcode"></i> Tạo Mã QR Quét Zalo
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" id="btnRefreshZaloQr" onclick="startZaloQrScan()" style="display: none;">
+                                        <i class="fa-solid fa-rotate-right"></i> Làm Mới Mã QR
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- Nhập Cookie -->
