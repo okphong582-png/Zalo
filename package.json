@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "web": "node server.js",
-    "cli": "node cli.js",
+    "start": "node server.js",
+    "dev": "node server.js",
     "test": "node -e \"console.log('Tool ready!')\""
   },
   "keywords": [],
